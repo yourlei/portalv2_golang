@@ -9,24 +9,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 // 登录时提交的请求体结构
-type Login struct {
+type loginForm struct {
 	Email 	 string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 	Uuid     string `json:"uuid" binding:"required"`
 	Code     string `json:"code" binding:"required"`
 }
 
+// 注册时提交表单域
+type signupForm struct {
+	name      string `json:"name" binding:"required"`
+	email     string `json:"email" binding:"required"`
+	mobile    string `json:"mobile" binding:"required"`
+	password  string `json:"password" binding:"required"`
+	roleId    int    `json:"roleId" binding:"required"`
+}
 // 账户登录
 func Signin(c *gin.Context) {
-	var loginInfo Login
+	var loginInfo loginForm
 	
 	if err := c.BindJSON(&loginInfo); err != nil {
-  	c.JSON(http.StatusBadRequest, gin.H{
-			"code": 1,
-			"error": gin.H{
-				"msg": "参数错误",
-			},
-		})
+  	// c.JSON(http.StatusBadRequest, gin.H{
+		// 	"code": 1,
+		// 	"error": gin.H{
+		// 		"msg": "参数错误",
+		// 	},
+		// })
+		respondBadRequest(c)
     return
 	}
 	// 检查验证码
@@ -40,5 +49,31 @@ func Signin(c *gin.Context) {
 		return
 	}
 	log.Print("begin....")
-	service.Signin()
+	service.Signin(loginInfo.Email, loginInfo.Password)
+}
+
+func Signup(c *gin.Context) {
+	var signupInfo signupForm
+
+	if err := c.BindJSON(&signupInfo); err != nil {
+  	// c.JSON(http.StatusBadRequest, gin.H{
+		// 	"code": 1,
+		// 	"error": gin.H{
+		// 		"msg": "参数错误",
+		// 	},
+		// })
+		respondBadRequest(c)
+    return
+	}
+
+	log.Print(signupInfo.name)
+}
+
+func respondBadRequest(c *gin.Context) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"code": 1,
+		"error": gin.H{
+			"msg": "参数错误",
+		},
+	})
 }
