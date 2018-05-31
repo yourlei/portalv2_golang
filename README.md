@@ -1,6 +1,15 @@
-### gin 项目
+### portal
 
-#### 目录结构(基于mvc结构)
+## install dependence
 
-- portal 
-  
+``` bash
+$ git clone git@github.com:yourlei/portal.git
+$ cd portal 
+$ dep ensure
+```
+
+## run
+
+``` bash
+$ go run main.go
+```
