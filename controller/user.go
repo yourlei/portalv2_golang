@@ -2,40 +2,20 @@ package controller
 
 import (
 	"net/http"
-	"log"
+	"fmt"
 
 	"portal/service"
+	"portal/common"
 
 	"github.com/gin-gonic/gin"
+	"github.com/asaskevich/govalidator"
 )
-// 登录时提交的请求体结构
-type loginForm struct {
-	Email 	 string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Uuid     string `json:"uuid" binding:"required"`
-	Code     string `json:"code" binding:"required"`
-}
-
-// 注册时提交表单域
-type signupForm struct {
-	name      string `json:"name" binding:"required"`
-	email     string `json:"email" binding:"required"`
-	mobile    string `json:"mobile" binding:"required"`
-	password  string `json:"password" binding:"required"`
-	roleId    int    `json:"roleId" binding:"required"`
-}
 // 账户登录
 func Signin(c *gin.Context) {
-	var loginInfo loginForm
+	var loginInfo common.LoginForm
 	
 	if err := c.BindJSON(&loginInfo); err != nil {
-  	// c.JSON(http.StatusBadRequest, gin.H{
-		// 	"code": 1,
-		// 	"error": gin.H{
-		// 		"msg": "参数错误",
-		// 	},
-		// })
-		respondBadRequest(c)
+		common.RespondBadRequest(c)
     return
 	}
 	// 检查验证码
@@ -48,32 +28,38 @@ func Signin(c *gin.Context) {
 		})
 		return
 	}
-	log.Print("begin....")
 	service.Signin(loginInfo.Email, loginInfo.Password)
 }
 
 func Signup(c *gin.Context) {
-	var signupInfo signupForm
+	var signupInfo common.SignupForm
+	var msg string
 
 	if err := c.BindJSON(&signupInfo); err != nil {
-  	// c.JSON(http.StatusBadRequest, gin.H{
-		// 	"code": 1,
-		// 	"error": gin.H{
-		// 		"msg": "参数错误",
-		// 	},
-		// })
-		respondBadRequest(c)
+		common.RespondBadRequest(c)
     return
 	}
+	// 验证注册信息
+	if ok, err := govalidator.ValidateStruct(signupInfo); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 1,
+			"msg": err,
+		})
+	} else {
+		fmt.Printf("OK: %v\n", ok)
+	}
+	// code
+	code := service.Signup(signupInfo)
 
-	log.Print(signupInfo.name)
-}
+	switch code {
+	case 100010:
+		msg = "该邮箱或手机号已注册"
+	}
 
-func respondBadRequest(c *gin.Context) {
-	c.JSON(http.StatusBadRequest, gin.H{
-		"code": 1,
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
 		"error": gin.H{
-			"msg": "参数错误",
+			"msg": msg,
 		},
 	})
 }

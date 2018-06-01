@@ -1,11 +1,13 @@
 package service
 
 import (
+	"fmt"
 	"log"
 
 	"portal/database"
 	"portal/common"
 )
+const deleted_at = "0000-01-01 00:00:00"
 // 用户登录
 // 验证用户信息,生成token
 func Signin(email, passwd string) (int, string) {
@@ -21,7 +23,7 @@ func Signin(email, passwd string) (int, string) {
 		id, name, password, status, check_status 
 		FROM users 
 		WHERE email = ? 
-		AND deleted_at = "0000-01-01 00:00:00"`, email)
+		AND deleted_at = ?`, email, common.DeletedAt)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,6 +45,30 @@ func Signin(email, passwd string) (int, string) {
 }
 
 // 用户注册
-func Signup(User common.SignupForm)  {
+func Signup(User common.SignupForm) int  {
+	log.Print(User)
+	var count int
+	row, err := database.ConnDB().Query(`
+		SELECT COUNT(1) AS count FROM users WHERE (email = ? OR mobile = ?) AND deleted_at = ?
+	`, User.Email, User.Mobile, common.DeletedAt)
 	
+	// err := row.Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// if err != nil && err != database.ConnDB().ErrNoRows {
+  //   // log the error
+	// }
+	for row.Next() {
+		err := row.Scan(&count)
+		if err != nil {
+			fmt.Println(err)
+			log.Fatal(err)
+		}
+	}
+	if count > 0 {
+		return 1
+	}
+
+	return 0
 }

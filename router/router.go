@@ -12,8 +12,12 @@ func Run() {
 	router.Use(middleware.Cors)
   // 根路由
 	router.GET("/", controller.Home)
+	// 获取验证码
 	router.GET("/api/v1/image/base64", controller.Create)
+	// 用户登录
 	router.POST("/api/v1/users/signin", controller.Signin)
+	// 用户注册
+	router.POST("/api/v1/users/signup", controller.Signup)
 	// listent 3000
 	router.Run(":3000")
 }
