@@ -52,9 +52,11 @@ func Signup(c *gin.Context) {
 	code := service.Signup(signupInfo)
 
 	switch code {
-	case 100010:
-		msg = "该邮箱或手机号已注册"
-	}
+		case 1:
+			msg = "该邮箱或手机号已注册"
+		default: 
+			msg = ""
+	} 
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,

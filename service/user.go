@@ -6,6 +6,8 @@ import (
 
 	"portal/database"
 	"portal/common"
+
+	"golang.org/x/crypto/bcrypt"
 )
 const deleted_at = "0000-01-01 00:00:00"
 // 用户登录
@@ -51,24 +53,49 @@ func Signup(User common.SignupForm) int  {
 	row, err := database.ConnDB().Query(`
 		SELECT COUNT(1) AS count FROM users WHERE (email = ? OR mobile = ?) AND deleted_at = ?
 	`, User.Email, User.Mobile, common.DeletedAt)
-	
-	// err := row.Scan(&count)
+	// print err
 	if err != nil {
 		log.Fatal(err)
 	}
-	// if err != nil && err != database.ConnDB().ErrNoRows {
-  //   // log the error
-	// }
+	// 获取count值
 	for row.Next() {
 		err := row.Scan(&count)
 		if err != nil {
-			fmt.Println(err)
+			// fmt.Println(err)
 			log.Fatal(err)
 		}
 	}
+	// 邮箱或手机号已注册
 	if count > 0 {
 		return 1
 	}
+	passwordOK := "admin"
+	// passwordERR := "adminxx"
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(passwordOK), bcrypt.DefaultCost)
+	if err != nil {
+			fmt.Println(err)
+	}
+	fmt.Println(string(hash), "=+++++++++++++")
+
+	// encodePW := string(hash)  // 保存在数据库的密码，虽然每次生成都不同，只需保存一份即可
+	// fmt.Println(encodePW)
+
+	// // 正确密码验证
+	// err = bcrypt.CompareHashAndPassword([]byte(encodePW), []byte(passwordOK))
+	// if err != nil {
+	// 		fmt.Println("pw wrong")
+	// } else {
+	// 		fmt.Println("pw ok")
+	// }
+
+	// // 错误密码验证
+	// err = bcrypt.CompareHashAndPassword([]byte(encodePW), []byte(passwordERR))
+	// if err != nil {
+	// 		fmt.Println("pw wrong")
+	// } else {
+	// 		fmt.Println("pw ok")
+	// }
 
 	return 0
 }
