@@ -1,11 +1,13 @@
 package controller
 
 import (
+	"encoding/json"
 	"net/http"
 	"fmt"
 
 	"portal/service"
 	"portal/common"
+	"portal/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/asaskevich/govalidator"
@@ -30,10 +32,10 @@ func Signin(c *gin.Context) {
 	}
 	service.Signin(loginInfo.Email, loginInfo.Password)
 }
-
+// 用户注册
 func Signup(c *gin.Context) {
 	var signupInfo common.SignupForm
-	var msg string
+	// var msg string
 
 	if err := c.BindJSON(&signupInfo); err != nil {
 		common.RespondBadRequest(c)
@@ -49,19 +51,30 @@ func Signup(c *gin.Context) {
 		fmt.Printf("OK: %v\n", ok)
 	}
 	// code
-	code := service.Signup(signupInfo)
-
-	switch code {
-		case 1:
-			msg = "该邮箱或手机号已注册"
-		default: 
-			msg = ""
-	} 
-
+	code, msg := service.Signup(signupInfo)
+	fmt.Println(msg)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg,
+			"msg": error.Error(msg),
 		},
+	})
+}
+
+func QueryUser(c *gin.Context) {
+	var code = 0
+	res, msg := service.QueryUserList()
+	fmt.Println(res, msg)
+	var result = &model.UserList{Data: res}
+	bts, _ := json.Marshal(result)
+	if msg != nil {
+		code = 1
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": error.Error(msg),
+		},
+		"data": bts,
 	})
 }
