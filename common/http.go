@@ -15,3 +15,14 @@ func RespondBadRequest(c *gin.Context) {
 		},
 	})
 }
+
+// func CheckQueryParams(c *gin.Context) {
+// 	if query := c.Query("query"); query == "" {
+// 		c.JSON(http.StatusBadRequest, gin.H{
+// 			"code": 1,
+// 			"error": gin.H{
+// 				"msg": "参数错误",
+// 			},
+// 		})
+// 	}
+// }

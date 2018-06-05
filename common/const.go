@@ -1,17 +1,19 @@
 // 公用常量
 package common
 
-// 参数绑定示例
-// form: content-type = x-www-form-urlencoded
-// json: content-type = application/json
-// binding: required 表示该参数必选且不为空
-/* ***************************
- * type User struct {
- *     Username string `form:"username" json:"username" binding:"required"`
- *     Passwd   string `form:"passwd" json:"passwd" binding:"required"`
- *     Age      int    `form:"age" json:"age"`
- * }
- **************************** */
+import (
+	// "time"
+)
+/* *******************
+ * 常量
+ * ******************/
+// deleted_at 默认值
+const DeletedAt = "0000-01-01 00:00:00"
+
+
+/* *******************
+ * 结构体类
+ * ******************/ 
 // 用户注册提交表单信息
 type SignupForm struct {
 	Name      string `json:"name" binding:"required"`
@@ -36,5 +38,24 @@ type CodeMsg struct {
 	error ErrorMsg
 }
 
-// deleted_at 默认值
-const DeletedAt = "0000-01-01 00:00:00"
+/* *******************
+ *    query body
+ * ******************/
+ type QueryParams struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+// 用户列表查询条件
+type UserWhere struct {
+	Email       string    `json:"email"`
+	Mobile      string    `json:"mobile"`
+	Group       string    `json:"group"`
+	Status  	  string    `json:"status"`
+	CheckStatus string    `json:"check_status"`
+	CreatedAt   string    `json:"created_at"`
+}
+
+type UserQueryBody struct {
+	QueryParams
+	Where UserWhere `json:"where"`
+}

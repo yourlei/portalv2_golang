@@ -63,14 +63,48 @@ func Signup(User common.SignupForm) (int, error)  {
 	}
 	return 0, nil
 }
-
-func QueryUserList() ([]*model.User, error) {
-	result, err := database.FindAllUser("`email` = ? OR `id` = ? ", "admin@ibbd.net", 1)
-
+// 查询用户列表
+// @reutrn (resutl slice, msg error)
+func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
+	var (
+		where string = "`u`.`status` = ?"
+		values []string
+	)
+	// 用户状态, 默认查询status = 1
+	if query.Where.Status != "" {
+		values = append(values, query.Where.Status)
+	} else {
+		values = append(values, "1")
+	}
+	// 邮箱
+	if query.Where.Email != "" {
+		// where += " AND `u`.`email` LIKE '%'||?||'%'"
+		where += " AND `u`.`email` LIKE ?"
+		values = append(values, query.Where.Email)
+	}
+	// 审核状态
+	if query.Where.CheckStatus != "" {
+		where += " AND `u`.`check_status` = ?"
+		values = append(values, query.Where.CheckStatus)
+	}
+	// values转为interface
+	params := make([]interface{}, len(values))
+	for i, v := range values {
+		params[i] = v
+	}
+	res, err := database.FindAllUser(where, params...)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
-	// fmt.Println(result[0])
-	return result, nil
+	fmt.Print("==========")
+
+	return res, nil
+}
+func UpdateUserStatus(id string, status, remark string) error {
+	err := database.UpdateUserStatus(id, status, remark)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

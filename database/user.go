@@ -1,6 +1,7 @@
 package database
 
 import (
+	// "database/sql"
 	"fmt"
 	// "log"
 	"time"
@@ -11,13 +12,14 @@ import (
 const addUser = "INSERT INTO `portal_users` (`name`, `email`, `mobile`, `password`, `created_at`, `updated_at`) VALUES(?, ?, ?, ?, ?, '0000-01-01 00:00:00')"
 // 插入用户ID和角色ID
 const insertUserRole = "INSERT INTO `portal_user_role` VALUES(?, ?)"
-// count by where
+// 统计行数
 const countSql = "SELECT COUNT(1) AS count FROM portal_users WHERE "
 // 用户列表
 const queryUser = "SELECT" + 
 									" `u`.`id`, `u`.`name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `u`.`check_status`, `r`.`role_id` AS role" + 
 									" FROM portal_users AS u INNER JOIN portal_user_role AS r ON u.id = r.user_id" +
 									" WHERE "
+// const 
 
 // 新增用户
 func AddUser(User common.SignupForm) error {
@@ -55,7 +57,7 @@ func FindOneUser(User common.SignupForm, where string) (bool, error) {
 
 	return false, nil
 }
-
+// 查询用户列表
 func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
 	var result = make([]*model.User, 0)
 	rows, err := ConnDB().Query(queryUser + where, query...)
@@ -84,4 +86,20 @@ func FindAllUser(where string, query ...interface{}) (data []*model.User, err er
 		}
 	}
 	return result, nil
+}
+// 更新用户状态
+func UpdateUserStatus(id string, status string, remark string) error {
+	var err error
+	// var res sql.Result
+	fmt.Println(id, status, remark, "====================")
+	if remark != "" {
+		_, err = ConnDB().Exec("UPDATE portal_users SET `status` = ? AND `remark` = ? WHERE id = ?", status, remark, id)
+	} else {
+		_, err = ConnDB().Exec("UPDATE portal_users SET `status` = ? WHERE id = ?", status, id)
+	}
+	// error
+	if err != nil {
+		return err
+	}
+	return nil
 }

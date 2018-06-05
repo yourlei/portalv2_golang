@@ -20,6 +20,7 @@ func Run() {
 	router.POST("/api/v1/users/signup", controller.Signup)
 	// 查询用户列表
 	router.GET("/api/v1/users", controller.QueryUser)
+	router.PATCH("/api/v1/users/:id", controller.UpdateUserStatus)
 	// listent 3000
 	router.Run(":3000")
 }

@@ -7,7 +7,6 @@ import (
 
 	"portal/service"
 	"portal/common"
-	"portal/model"
 
 	"github.com/gin-gonic/gin"
 	"github.com/asaskevich/govalidator"
@@ -61,20 +60,89 @@ func Signup(c *gin.Context) {
 	})
 }
 
+// 查询用户与列表
 func QueryUser(c *gin.Context) {
-	var code = 0
-	res, msg := service.QueryUserList()
-	fmt.Println(res, msg)
-	var result = &model.UserList{Data: res}
-	bts, _ := json.Marshal(result)
+	var (
+		code = 0
+		queryJson common.UserQueryBody
+	)
+	// json string 转为 struct
+	if err := json.Unmarshal([]byte(c.Query("query")), &queryJson); err != nil {
+		common.RespondBadRequest(c)
+		return
+	}
+	res, msg := service.QueryUserList(queryJson)
+
 	if msg != nil {
 		code = 1
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": error.Error(msg),
+			"msg": msg,
 		},
-		"data": bts,
+		"data": res,
+		"total": len(res),
 	})
+}
+// 更新用户状态
+func UpdateUserStatus(c *gin.Context) {
+	type JsonBody struct {
+		Status string    `json:"status"`
+		Remark string `json:"remark"`
+	}
+	var (
+		body JsonBody
+		code int
+	)
+	if err := c.BindJSON(&body); err != nil {
+		common.RespondBadRequest(c)
+    return
+	}
+	fmt.Println(body, "params............")
+	err := service.UpdateUserStatus(c.Param("id"), body.Status, body.Remark)
+	if err != nil {
+		code = 1
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": err,
+		},
+	})
+}
+// test query
+func GetList(c *gin.Context) {
+	// var tem = &UserQueryBody{}
+	// query := c.Query("query")
+
+	// if query == "" {
+	// 	common.RespondBadRequest(c)
+	// 	return
+	// }
+	// if err := json.Unmarshal([]byte(query), &tem); err == nil {
+	// 	fmt.Println(tem.Where)
+
+	// 	if len(tem.Where.Email) > 0 {
+	// 		fmt.Printf("hello===========")
+	// 	}
+	// }
+	// if tem.Where.Email != "" {
+	// 	fmt.Println(tem.Where.Email)
+	// }
+
+	// convert map 
+	// if tem["where"] != nil {
+	// 	fmt.Print("==========================")
+	// 	body := tem["where"]
+	// 	// fmt.Println(body)
+	// 	if tem["where"]["email"] != nil {
+	// 		fmt.Println(tem["where"])
+	// 	}
+	// }
+	// fmt.Println(tem)
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"code": 0,
+	// 	"data": "",
+	// })
 }
