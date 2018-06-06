@@ -101,9 +101,7 @@ error: {
 }
 ```
 
--　返回结果
-
-请求参数
+- 请求参数
 
 | 参数 |类型  |说明  |范围及格式|
 |:----:|:----:|:----:|:--------:|
@@ -342,6 +340,58 @@ error: {
   error: {
     msg: ''
   }
+}
+```
+
+
+#### 1.7 获取用户列表
+
+- 请求方式: get
+- URL: domain/api/v1/users?query={body}
+
+- body参数:
+
+``` json
+{
+  "offset": 0, # 页码
+  "limit": 10, # 页长
+  "where": {
+    "status": "0",
+    "check_status": "0",
+    "email": "admin@ibbd.net",
+  }
+}
+```
+
+- **where参数说明**
+
+| 参数 |类型  |说明  |范围及格式|
+|:----:|:----:|:----:|:--------:|
+|email |string|邮箱  |          |
+|status | string   | 用户状态|1:启用, -1: 禁用, 0:注销|
+|check_status|string|账户审核状态||
+
+
+- 返回结果
+
+``` json
+{
+    "code": 0,
+    "error": {
+        "msg": null
+    },
+    "data": [
+        {
+            "id": "36",
+            "name": "Janni",
+            "role": 2,
+            "mobile": "18888888887",
+            "email": "Janni@gmail.com",
+            "status": 1,
+            "check_status": 0
+        }
+    ],
+    "total": 1
 }
 ```
 

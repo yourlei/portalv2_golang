@@ -71,8 +71,8 @@ func QueryUser(c *gin.Context) {
 		common.RespondBadRequest(c)
 		return
 	}
+	fmt.Println(queryJson, "==========")
 	res, msg := service.QueryUserList(queryJson)
-
 	if msg != nil {
 		code = 1
 	}

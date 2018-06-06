@@ -41,18 +41,18 @@ type CodeMsg struct {
 /* *******************
  *    query body
  * ******************/
- type QueryParams struct {
+type QueryParams struct {
 	Offset int `json:"offset"`
 	Limit  int `json:"limit"`
 }
 // 用户列表查询条件
 type UserWhere struct {
-	Email       string    `json:"email"`
-	Mobile      string    `json:"mobile"`
-	Group       string    `json:"group"`
-	Status  	  string    `json:"status"`
-	CheckStatus string    `json:"check_status"`
-	CreatedAt   string    `json:"created_at"`
+	Email       string    `json:"email,omitempty"`
+	Mobile      string    `json:"mobile,omitempty"`
+	Group       string    `json:"group,omitempty"`
+	Status  	  string    `json:"status,omitempty"`
+	CheckStatus string    `json:"check_status,omitempty"`
+	CreatedAt   string    `json:"created_at,omitempty"`
 }
 
 type UserQueryBody struct {

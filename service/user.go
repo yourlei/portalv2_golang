@@ -87,17 +87,24 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
 		where += " AND `u`.`check_status` = ?"
 		values = append(values, query.Where.CheckStatus)
 	}
-	// values转为interface
-	params := make([]interface{}, len(values))
+	if query.Limit == 0 {
+		query.Limit = 10
+	}
+	where += " LIMIT ?, ?"
+	// slice不能直接传递给interface slice
+	params := make([]interface{}, len(values)+2)
 	for i, v := range values {
 		params[i] = v
 	}
+	// 加入分页
+	params[len(values)] = query.Offset
+	params[len(values) + 1] = query.Limit
+	fmt.Println(where, params)
 	res, err := database.FindAllUser(where, params...)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Print("==========")
-
+	
 	return res, nil
 }
 func UpdateUserStatus(id string, status, remark string) error {

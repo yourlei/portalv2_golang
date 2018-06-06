@@ -57,7 +57,7 @@ func FindOneUser(User common.SignupForm, where string) (bool, error) {
 
 	return false, nil
 }
-// 查询用户列表
+// 查询用户列表  offset int, limit int, 
 func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
 	var result = make([]*model.User, 0)
 	rows, err := ConnDB().Query(queryUser + where, query...)
