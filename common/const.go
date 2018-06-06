@@ -28,6 +28,12 @@ type LoginForm struct {
 	Uuid     string `json:"uuid" binding:"required"`
 	Code     string `json:"code" binding:"required"`
 }
+// 编辑用户
+type EditUserForm struct {
+	Name     string `json:"name,omitempty"`
+	Mobile   string `json:"mobile,omitempty"`
+	Password string `json:"password,omitempty"`
+}
 /* *******************
  *    query body
  * ******************/
@@ -48,4 +54,12 @@ type UserWhere struct {
 type UserQueryBody struct {
 	QueryParams
 	Where UserWhere `json:"where"`
+}
+
+// Response
+type BaseResponse struct {
+	Code  int   `json:"code"`
+	Error struct {
+		Msg interface{} `json:"msg"`
+	} `json:"error"`
 }

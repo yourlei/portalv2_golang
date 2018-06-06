@@ -35,7 +35,6 @@ func Signin(c *gin.Context) {
 func Signup(c *gin.Context) {
 	var signupInfo common.SignupForm
 	// var msg string
-
 	if err := c.BindJSON(&signupInfo); err != nil {
 		common.RespondBadRequest(c)
     return
@@ -51,7 +50,6 @@ func Signup(c *gin.Context) {
 	}
 	// code
 	code, msg := service.Signup(signupInfo)
-	fmt.Println(msg)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
@@ -86,58 +84,72 @@ func QueryUser(c *gin.Context) {
 }
 // 更新用户状态
 func UpdateUserStatus(c *gin.Context) {
-	// post request body
+	// request body
 	type JsonBody struct {
 		Status int    `json:"status" binding:"required"`
 		Remark string `json:"remark" binding:"required"`
 	}
-	var (
-		body JsonBody
-	)
+	var body JsonBody
 	if err := c.BindJSON(&body); err != nil {
 		common.RespondBadRequest(c)
     return
 	}
 	code, errMsg := service.UpdateUserStatus(c.Param("id"), body.Status, body.Remark)
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"error": gin.H{
-			"msg": errMsg,
-		},
-	})
+	r := &common.BaseResponse{
+		Code: code,
+	}
+	r.Error.Msg = errMsg
+	c.JSON(http.StatusOK, r)
+}
+// 审核用户
+func ReviewUser(c *gin.Context) {
+	// request body
+	type JsonBody struct {
+		Status int    `json:"check_status" binding:"required"`
+		Remark string `json:"check_remark" binding:"required"`
+	}
+	var body JsonBody
+	if err := c.BindJSON(&body); err != nil {
+		common.RespondBadRequest(c)
+    return
+	}
+	code, errMsg := service.ReviewUser(c.Param("id"), body.Status, body.Remark)
+	r := &common.BaseResponse{
+		Code: code,
+	}
+	r.Error.Msg = errMsg
+	c.JSON(http.StatusOK, r)
+}
+// EditUser
+func EditUser(c *gin.Context) {
+	var body common.EditUserForm
+
+	if err := c.BindJSON(&body); err != nil {
+		common.RespondBadRequest(c)
+    return
+	}
+	code, errMsg := service.EditUser(c.Param("id"), body)
+	r := &common.BaseResponse{
+		Code: code,
+	}
+	r.Error.Msg = errMsg
+	c.JSON(http.StatusOK, r)
 }
 // test query
-func GetList(c *gin.Context) {
-	// var tem = &UserQueryBody{}
-	// query := c.Query("query")
+func Test(c *gin.Context) {
+	fmt.Println("hi girl")
 
-	// if query == "" {
-	// 	common.RespondBadRequest(c)
-	// 	return
+	// type responseBody struct{
+	// 	Code int    `json:"code"`
+	// 	Msg  error  `json:"msg"`
 	// }
-	// if err := json.Unmarshal([]byte(query), &tem); err == nil {
-	// 	fmt.Println(tem.Where)
+	// var str = `{"code": 0, "msg": "fail"}`
+	// var d responseBody
 
-	// 	if len(tem.Where.Email) > 0 {
-	// 		fmt.Printf("hello===========")
-	// 	}
-	// }
-	// if tem.Where.Email != "" {
-	// 	fmt.Println(tem.Where.Email)
-	// }
+	// var dat = &responseBody{Code: 0, Msg: errors.New("error down")}
 
-	// convert map 
-	// if tem["where"] != nil {
-	// 	fmt.Print("==========================")
-	// 	body := tem["where"]
-	// 	// fmt.Println(body)
-	// 	if tem["where"]["email"] != nil {
-	// 		fmt.Println(tem["where"])
-	// 	}
+	// if err := json.Unmarshal([]byte(str), &d); err != nil {
+	// 	fmt.Println(err)
 	// }
-	// fmt.Println(tem)
-	// c.JSON(http.StatusOK, gin.H{
-	// 	"code": 0,
-	// 	"data": "",
-	// })
+	// c.JSON(http.StatusOK, dat)
 }

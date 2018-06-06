@@ -200,8 +200,8 @@ error: {
   "remark": "注销leimi"
 }
 ```
-- 返回值
 
+- 返回值
 
 ``` json
 
@@ -218,12 +218,11 @@ error: {
 - 请求方式: patch
 - URL: domain/users/status/:id
 
-
 - 参数
 
 ``` json
 {
-	"status": 1,  # 1 启用
+	"status": 1,
 	"remark": "启用leimi"
 }
 ```
@@ -232,7 +231,7 @@ error: {
 
 | 参数 |类型  |说明  |范围及格式|
 |:----:|:----:|:----:|:--------:|
-|status |number|用户状态值  | 1启用,-1禁用, 0注销|
+|status |number|用户状态值  | 1 启用,-1 禁用, 0 注销|
 |remark | string| 描述|    |
 
 - 返回值
@@ -252,7 +251,6 @@ error: {
 - 请求方式: patch
 - URL: domain/users/check/:id
 
-
 - 参数
 
 ``` json
@@ -262,12 +260,16 @@ error: {
 }
 ```
 
+- 参数说明
+
+| 参数 |类型  |说明  |范围及格式|
+|:----:|:----:|:----:|:--------:|
+|check_status |number|审核状态值  |1 审核通过,-1 审核不通过, 0 未审核|
+|check_remark | string| 描述|    |
 
 - 返回值
 
-
 ``` json
-
 {
     "code": 0,
     "error": {
@@ -276,20 +278,18 @@ error: {
 }
 ```
 
-
 #### 1.5 编辑用户信息
 
 - 请求方式: patch
 - URL: domain/users/edit/:id
 
-
 - 参数
 
 ``` json
 {
-  name: '',
-  password: '',
-  mobile: ''
+  "name": "",
+  "password": "",
+  "mobile": ""
 }
 ```
 
@@ -301,25 +301,22 @@ error: {
 | password        | 密码 |
 | mobile        | 手机号 |
 
-
 - 返回值
-
 
 ``` json
 {
     "code": 0,
     "error": {
-        "msg": ""
+      "msg": ""
     },
     "data": {
-        "name": "不是",
-        "email": "park@qq.com",
-        "mobile": "18988888884",
-        "status": 1,
-        "check_status": 0
+      "name": "不是",
+      "email": "park@qq.com",
+      "mobile": "18988888884",
+      "status": 1,
+      "check_status": 0
     }
 }
-
 ```
 
 #### 1.6 修改用户密码

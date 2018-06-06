@@ -125,7 +125,11 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
  *   status: 状态值
  *   remark: 操作描述
  */
-func UpdateUserStatus(id string, status int, remark string) (int, error) {
+func UpdateUserStatus(id string, status int, remark string) (int, interface{}) {
+	flag, _ := database.FindById(id, `portal_users`)
+	if !flag {
+		return 0, "未找到该用户"
+	}
 	err := database.UpdateUserStatus(id, status, remark)
 	// return
 	if err != nil {
@@ -133,6 +137,86 @@ func UpdateUserStatus(id string, status int, remark string) (int, error) {
 	}
 	return 0, nil
 }
+/**
+ * 审核账户, check_status -1 审核不通过 0 未审核 1审核通过
+ * @params 
+ *   id:           用户id
+ *   check_status: 状态值
+ *   check_remark: 描述
+ */
+func ReviewUser(id string, check_status int, check_remark string) (int, interface{}) {
+	flag, _ := database.FindById(id, `portal_users`)
+	if !flag {
+		return 1, "未找到该用户"
+	}
+	err := database.ReviewUser(id, check_status, check_remark)
+	// return
+	if err != nil {
+		return 1, err
+	}
+	return 0, nil
+}
+/**
+ * 编辑用户
+ * @params
+ *   id string
+ *   form struct
+ */
+func EditUser(id string, form common.EditUserForm) (int, interface{}) {
+	flag, _ := database.FindById(id, `portal_users`)
+	if !flag {
+		return 1, "未找到该用户"
+	}
+	// update data is not nil
+	if form.Name != "" || form.Mobile != "" || form.Password != "" {
+		sql := "UPDATE portal_users SET"
+		// 用户名
+		if form.Name != "" {
+			sql += " `name` = " + `"` + form.Name + `"`
+		}
+		// 手机号
+		if form.Mobile != "" {
+			if form.Name != "" {
+				sql += ", `mobile` = " + `"` + form.Mobile + `"`
+			} else {
+				sql += " `mobile` = " + `"` + form.Mobile + `"`
+			}
+		}
+		// password
+		if form.Password != "" {
+			hash, _ := bcrypt.GenerateFromPassword([]byte(form.Password), bcrypt.DefaultCost)
+			if form.Name != "" || form.Mobile != "" {
+				sql += ", `password` = " + `"` + string(hash) + `"`
+			} else {
+				sql += " `password` = " + `"` + string(hash) + `"`
+			}
+		}
+		sql += " WHERE `id` = " + `"` + id + `"`
+		// update table
+		err := database.EditUser(id, sql)
+		if err != nil {
+			return 1, err
+		}
+		return 0, nil
+	}
+	return 0, nil
+}
+// change password
+func ChangePasswd(id string, oldPasswd, passwd string) (int, interface{}) {
+	flag, _ := database.FindById(id, `portal_users`)
+	if !flag {
+		return 1, "未找到该用户"
+	}
+	// verify oldPasswd
+	hash, _ := database.GetPasswd(id)
+
+	if err := bcrypt.CompareHashAndPassword(hash, oldPasswd); err != nil {
+
+	}
+	return 0, nil
+}
+
+
 
 func Test()  {
 	fmt.Println("yes man")

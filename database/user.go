@@ -1,10 +1,9 @@
 package database
 
 import (
-	// "database/sql"
 	"fmt"
-	// "log"
 	"time"
+	
 	"portal/model"
 	"portal/common"
 )
@@ -39,8 +38,7 @@ func AddUser(User common.SignupForm) error {
 	}
 	return tx.Commit()
 }
-
-// count by where
+// Check email or mabile had registered
 func FindOneUser(User common.SignupForm, where string) (bool, error) {
 	var count int
 	row, _ := ConnDB().Query(countSql + where, User.Email, User.Mobile, common.DeletedAt)
@@ -101,4 +99,58 @@ func UpdateUserStatus(id string, status int, remark string) error {
 		return err
 	}
 	return nil
+}
+// 审核用户
+func ReviewUser(id string, status int, remark string) error {
+	var err error
+	// with remark
+	if remark != "" {
+		_, err = ConnDB().Exec("UPDATE portal_users SET `check_status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
+	} else {
+		_, err = ConnDB().Exec("UPDATE portal_users SET `check_status` = ? WHERE id = ?", status, id)
+	}
+	// IF error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+// 编辑用户
+func EditUser(id string, sql string) error {
+	stmt, err := ConnDB().Prepare(sql)
+	// IF error
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec()
+	// IF error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+// change password
+func ChangePasswd(id int, passwd string) error{
+	stmt, err := ConnDB().Prepare(`UPDATE portal_users SET password = ? WHERE id = ?`)
+	// IF error
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(id, passwd)
+	// IF error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+// select password
+func GetPasswd(id string) (string, error){
+	var pw string
+	row := ConnDB().QueryRow(`SELECT password FROM portal_users WHERE id = ?`, id);
+	if  err := row.Scan(&pw); err != nil {
+		return "",err
+	}
+	return pw, nil
 }
