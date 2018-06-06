@@ -71,7 +71,6 @@ func QueryUser(c *gin.Context) {
 		common.RespondBadRequest(c)
 		return
 	}
-	fmt.Println(queryJson, "==========")
 	res, msg := service.QueryUserList(queryJson)
 	if msg != nil {
 		code = 1
@@ -87,27 +86,23 @@ func QueryUser(c *gin.Context) {
 }
 // 更新用户状态
 func UpdateUserStatus(c *gin.Context) {
+	// post request body
 	type JsonBody struct {
-		Status string    `json:"status"`
-		Remark string `json:"remark"`
+		Status int    `json:"status" binding:"required"`
+		Remark string `json:"remark" binding:"required"`
 	}
 	var (
 		body JsonBody
-		code int
 	)
 	if err := c.BindJSON(&body); err != nil {
 		common.RespondBadRequest(c)
     return
 	}
-	fmt.Println(body, "params............")
-	err := service.UpdateUserStatus(c.Param("id"), body.Status, body.Remark)
-	if err != nil {
-		code = 1
-	}
+	code, errMsg := service.UpdateUserStatus(c.Param("id"), body.Status, body.Remark)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": err,
+			"msg": errMsg,
 		},
 	})
 }

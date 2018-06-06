@@ -10,7 +10,6 @@ import (
 // deleted_at 默认值
 const DeletedAt = "0000-01-01 00:00:00"
 
-
 /* *******************
  * 结构体类
  * ******************/ 
@@ -29,15 +28,6 @@ type LoginForm struct {
 	Uuid     string `json:"uuid" binding:"required"`
 	Code     string `json:"code" binding:"required"`
 }
-type ErrorMsg struct {
-	msg string
-}
-// response
-type CodeMsg struct {
-	code int
-	error ErrorMsg
-}
-
 /* *******************
  *    query body
  * ******************/

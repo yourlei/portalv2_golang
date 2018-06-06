@@ -45,9 +45,14 @@ func Signin(email, passwd string) (int, string) {
 
 	return id, name
 }
-
-// 用户注册
-// @return (code int, msg error)
+/**
+ * 用户注册
+ * @params 
+ *   User struct (post body)
+ * @return
+ *   code int (0: 成功)
+ *   msg  error
+ */
 func Signup(User common.SignupForm) (int, error)  {
 	// 验证邮箱,手机号是否已注册
 	if flag, _ := database.FindOneUser(User, "(`email` = ? OR `mobile` = ?) AND `deleted_at` = ?"); flag {
@@ -56,21 +61,27 @@ func Signup(User common.SignupForm) (int, error)  {
 	// 密码加密
 	hash, _ := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
 	User.Password = string(hash)
-
+	// insert user data to user table
 	err := database.AddUser(User)
 	if (err != nil) {
 		return 1, err
 	}
 	return 0, nil
 }
-// 查询用户列表
-// @reutrn (resutl slice, msg error)
+/**
+ * 查询用户列表
+ * @params
+ *   query: struct (query参数)
+ * @reutrn 
+ *   resutl [] *model.User
+ *   msg    error
+ */
 func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
 	var (
 		where string = "`u`.`status` = ?"
 		values []string
 	)
-	// 用户状态, 默认查询status = 1
+	// 用户状态, status default value 1
 	if query.Where.Status != "" {
 		values = append(values, query.Where.Status)
 	} else {
@@ -90,6 +101,7 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
 	if query.Limit == 0 {
 		query.Limit = 10
 	}
+	// select offset and limit
 	where += " LIMIT ?, ?"
 	// slice不能直接传递给interface slice
 	params := make([]interface{}, len(values)+2)
@@ -99,19 +111,29 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
 	// 加入分页
 	params[len(values)] = query.Offset
 	params[len(values) + 1] = query.Limit
-	fmt.Println(where, params)
+	// Select user table
 	res, err := database.FindAllUser(where, params...)
 	if err != nil {
 		return nil, err
 	}
-	
 	return res, nil
 }
-func UpdateUserStatus(id string, status, remark string) error {
+/**
+ * 用户状态变更, status -1 注销, 0 禁用, 1 启用
+ * @params 
+ *   id:     用户id
+ *   status: 状态值
+ *   remark: 操作描述
+ */
+func UpdateUserStatus(id string, status int, remark string) (int, error) {
 	err := database.UpdateUserStatus(id, status, remark)
-
+	// return
 	if err != nil {
-		return err
+		return 1, err
 	}
-	return nil
+	return 0, nil
+}
+
+func Test()  {
+	fmt.Println("yes man")
 }
