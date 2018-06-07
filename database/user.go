@@ -1,37 +1,60 @@
 package database
 
 import (
-	"fmt"
-	// "fmt"
 	"time"
 	
 	"portal/model"
 	"portal/common"
 )
 // 新增用户
-const addUser = "INSERT INTO `portal_users` (`name`, `email`, `mobile`, `password`, `created_at`, `updated_at`)" +
-								" VALUES(?, ?, ?, ?, ?, '0000-01-01 00:00:00')"
+const addUser = "INSERT INTO" +
+								" `portal_user`(`name`, `email`, `mobile`, `password`, `created_at`)" +
+								" VALUES(?, ?, ?, ?, ?)"
 // 插入用户ID和角色ID
-const insertUserRole = "INSERT INTO `portal_user_role` VALUES(?, ?)"
-// 统计行数
-const countSql = "SELECT COUNT(1) AS count FROM portal_users WHERE "
+const insertUserRole = "INSERT INTO `portal_user_role`(`role_id`, `user_id`) VALUES(?, ?)"
 // 查询用户列表
-const queryUser = "SELECT" + 
-									" `u`.`id`, `u`.`name`, `u`.`email`, `u`.`mobile`, `u`.`status`, `u`.`check_status`, `r`.`role_id` AS role," + 
-									" `u`.`created_at`, `u`.`updated_at` FROM portal_users AS u INNER JOIN portal_user_role AS r ON u.id = r.user_id" +
+const queryUser = "SELECT "        +
+									" `u`.`id`,"     +
+									" `u`.`name`,"   +
+									" `u`.`email`,"  +
+									" `u`.`mobile`," + 
+									" `u`.`status`," +
+									" `u`.`remark`,"          +
+									" `u`.`check_status`,"    +
+									" `u`.`check_remark`,"    +
+									" `r`.`role_id` AS role," +
+									" `u`.`created_at`,"      +
+									" `u`.`updated_at`"       +
+									" FROM portal_user AS u INNER JOIN portal_user_role AS r ON u.id = r.user_id" +
 									" WHERE "
-
+// 用户登录
+func Signin(email string) (interface{}, error) {
+	var user model.User
+	// 根据email查询用户
+	Sql := `SELECT id, name, password, status, check_status FROM portal_user WHERE email = ? AND status != 3`
+	if err := ConnDB().QueryRow(Sql, email).Scan(
+		&user.Id, 
+		&user.Name, 
+		&user.Password, 
+		&user.Status,
+		&user.CheckStatus,
+	); err != nil {
+		return nil, err
+	}
+	return user, nil
+}
 // 新增用户
 func AddUser(User common.SignupForm) error {
 	tx, txErr := ConnDB().Begin()
 	if txErr != nil {
 		return txErr
 	}
+	// add row to user table
 	result, err1 := tx.Exec(addUser, User.Name, User.Email, User.Mobile, User.Password, time.Now().Format("2006-01-02 15:04:05"))
 	if err1 != nil {
 		return err1
 	}
-	// 获取rowID
+	// update user_role table
 	userId, _ := result.LastInsertId()
 	_, err2 := tx.Exec(insertUserRole, User.RoleId, userId)	
 	if  err2 != nil {
@@ -40,20 +63,13 @@ func AddUser(User common.SignupForm) error {
 	return tx.Commit()
 }
 // Check email or mabile had registered
-func FindOneUser(User common.SignupForm, where string) (bool, error) {
-	var count int
-	row, _ := ConnDB().Query(countSql + where, User.Email, User.Mobile, common.DeletedAt)
-	for row.Next() {
-		err := row.Scan(&count)
-		if err != nil {
-			return true, err
-		}
+func FindOneUser(where string, query ...interface{}) (bool, error) {
+	var name string
+	Sql := `SELECT name FROM portal_user WHERE ` + where
+	if err := ConnDB().QueryRow(Sql, query...).Scan(&name); err != nil {
+		return false, err
 	}
-	// 邮箱或手机号已注册
-	if count > 0 {
-		return true, nil
-	}
-	return false, nil
+	return true, nil
 }
 // 查询用户列表
 func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
@@ -73,7 +89,9 @@ func FindAllUser(where string, query ...interface{}) (data []*model.User, err er
 			&data.Email,
 			&data.Mobile,
 			&data.Status,
+			&data.Remark,
 			&data.CheckStatus,
+			&data.CheckRemark,
 			&data.Role,
 			&data.CreatedAt,
 			&data.UpdatedAt,
@@ -90,9 +108,9 @@ func UpdateUserStatus(id string, status int, remark string) error {
 	var err error
 	// with remark
 	if remark != "" {
-		_, err = ConnDB().Exec("UPDATE portal_users SET `status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
 	} else {
-		_, err = ConnDB().Exec("UPDATE portal_users SET `status` = ? WHERE id = ?", status, id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ? WHERE id = ?", status, id)
 	}
 	// IF error
 	if err != nil {
@@ -105,9 +123,9 @@ func ReviewUser(id string, status int, remark string) error {
 	var err error
 	// with remark
 	if remark != "" {
-		_, err = ConnDB().Exec("UPDATE portal_users SET `check_status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `check_status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
 	} else {
-		_, err = ConnDB().Exec("UPDATE portal_users SET `check_status` = ? WHERE id = ?", status, id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `check_status` = ? WHERE id = ?", status, id)
 	}
 	// IF error
 	if err != nil {
@@ -132,7 +150,7 @@ func EditUser(id string, sql string) error {
 }
 // change password
 func ChangePasswd(id, passwd string) error{
-	stmt, err := ConnDB().Prepare(`UPDATE portal_users SET password = ? WHERE id = ?`)
+	stmt, err := ConnDB().Prepare(`UPDATE portal_user SET password = ? WHERE id = ?`)
 	// IF error
 	if err != nil {
 		return err
@@ -148,7 +166,7 @@ func ChangePasswd(id, passwd string) error{
 // select password
 func GetPasswd(id string) (string, error){
 	var pw string
-	row := ConnDB().QueryRow(`SELECT password FROM portal_users WHERE id = ?`, id)
+	row := ConnDB().QueryRow(`SELECT password FROM portal_user WHERE id = ?`, id)
 	if  err := row.Scan(&pw); err != nil {
 		return "", err
 	}

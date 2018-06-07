@@ -13,6 +13,8 @@ type User struct {
 	Password    string    `json:"-"`             //密码
 	Status      int       `json:"status"`        //状态
 	CheckStatus int       `json:"check_status"`  //审核状态
+	Remark      string    `json:"remark"`        //描述
+	CheckRemark string    `json:"check_remark"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }

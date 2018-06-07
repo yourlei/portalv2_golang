@@ -20,22 +20,41 @@ func Signin(c *gin.Context) {
     return
 	}
 	// 检查验证码
-	if errCode, errMsg := service.VerifyCaptcha(loginInfo.Uuid, loginInfo.Code); errCode != 0 {
+	// if errCode, errMsg := service.VerifyCaptcha(loginInfo.Uuid, loginInfo.Code); errCode != 0 {
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"code": errCode, 
+	// 		"error": gin.H{
+	// 			"msg": errMsg,
+	// 		},
+	// 	})
+	// 	return
+	// }
+	code, data := service.Signin(loginInfo.Email, loginInfo.Password)
+	msg, ok := data.(string)
+	if !ok {
 		c.JSON(http.StatusOK, gin.H{
-			"code": errCode, 
+			"code": code,
 			"error": gin.H{
-				"msg": errMsg,
+				"msg": "",
+			},
+			"data": data,
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"code": code,
+			"error": gin.H{
+				"msg": msg,
 			},
 		})
-		return
 	}
-	service.Signin(loginInfo.Email, loginInfo.Password)
+	
+
 }
 // 用户注册
 func Signup(c *gin.Context) {
 	var signupInfo common.SignupForm
 	// var msg string
-	if err := c.BindJSON(&signupInfo); err != nil {
+	if err := c.BindJSON(&signupInfo); err != nil || len(signupInfo.Mobile) > 11 {
 		common.RespondBadRequest(c)
     return
 	}
@@ -50,12 +69,11 @@ func Signup(c *gin.Context) {
 	}
 	// code
 	code, msg := service.Signup(signupInfo)
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"error": gin.H{
-			"msg": error.Error(msg),
-		},
-	})
+	r := &common.BaseResponse{
+		Code: code,
+	}
+	r.Error.Msg = msg
+	c.JSON(http.StatusOK, r)
 }
 
 // 查询用户与列表
