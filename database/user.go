@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	// "fmt"
 	"time"
 	
 	"portal/model"
@@ -77,7 +78,6 @@ func FindAllUser(where string, query ...interface{}) (data []*model.User, err er
 			&data.CreatedAt,
 			&data.UpdatedAt,
 		); err != nil {
-			fmt.Println(err)
 			return result, err
 		} else {
 			result = append(result, data)
@@ -131,14 +131,14 @@ func EditUser(id string, sql string) error {
 	return nil
 }
 // change password
-func ChangePasswd(id int, passwd string) error{
+func ChangePasswd(id, passwd string) error{
 	stmt, err := ConnDB().Prepare(`UPDATE portal_users SET password = ? WHERE id = ?`)
 	// IF error
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(id, passwd)
+	_, err = stmt.Exec(passwd, id)
 	// IF error
 	if err != nil {
 		return err
@@ -148,9 +148,9 @@ func ChangePasswd(id int, passwd string) error{
 // select password
 func GetPasswd(id string) (string, error){
 	var pw string
-	row := ConnDB().QueryRow(`SELECT password FROM portal_users WHERE id = ?`, id);
+	row := ConnDB().QueryRow(`SELECT password FROM portal_users WHERE id = ?`, id)
 	if  err := row.Scan(&pw); err != nil {
-		return "",err
+		return "", err
 	}
 	return pw, nil
 }

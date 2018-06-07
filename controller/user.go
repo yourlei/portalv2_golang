@@ -135,6 +135,24 @@ func EditUser(c *gin.Context) {
 	r.Error.Msg = errMsg
 	c.JSON(http.StatusOK, r)
 }
+// Change password
+func ChangePasswd(c *gin.Context) {
+	type Password struct {
+		OldPasswd string `json:"passwd"`
+		NewPasswd string `json:"new_passwd"`
+	}
+	var pw Password
+	if err := c.BindJSON(&pw); err != nil {
+		common.RespondBadRequest(c)
+    return
+	}
+	code, errMsg := service.ChangePasswd(c.Param("id"), pw.OldPasswd, pw.NewPasswd)
+	r := &common.BaseResponse{
+		Code: code,
+	}
+	r.Error.Msg = errMsg
+	c.JSON(http.StatusOK, r)
+}
 // test query
 func Test(c *gin.Context) {
 	fmt.Println("hi girl")

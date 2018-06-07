@@ -126,9 +126,8 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
  *   remark: 操作描述
  */
 func UpdateUserStatus(id string, status int, remark string) (int, interface{}) {
-	flag, _ := database.FindById(id, `portal_users`)
-	if !flag {
-		return 0, "未找到该用户"
+	if code, _ := database.FindById(id, `portal_users`); code != 0 {
+		return 1, "未找到该用户"
 	}
 	err := database.UpdateUserStatus(id, status, remark)
 	// return
@@ -145,8 +144,7 @@ func UpdateUserStatus(id string, status int, remark string) (int, interface{}) {
  *   check_remark: 描述
  */
 func ReviewUser(id string, check_status int, check_remark string) (int, interface{}) {
-	flag, _ := database.FindById(id, `portal_users`)
-	if !flag {
+	if code, _ := database.FindById(id, `portal_users`); code != 0 {
 		return 1, "未找到该用户"
 	}
 	err := database.ReviewUser(id, check_status, check_remark)
@@ -163,8 +161,7 @@ func ReviewUser(id string, check_status int, check_remark string) (int, interfac
  *   form struct
  */
 func EditUser(id string, form common.EditUserForm) (int, interface{}) {
-	flag, _ := database.FindById(id, `portal_users`)
-	if !flag {
+	if code, _ := database.FindById(id, `portal_users`); code != 0 {
 		return 1, "未找到该用户"
 	}
 	// update data is not nil
@@ -203,15 +200,19 @@ func EditUser(id string, form common.EditUserForm) (int, interface{}) {
 }
 // change password
 func ChangePasswd(id string, oldPasswd, passwd string) (int, interface{}) {
-	flag, _ := database.FindById(id, `portal_users`)
-	if !flag {
+	if code, _ := database.FindById(id, `portal_users`); code != 0 {
 		return 1, "未找到该用户"
 	}
 	// verify oldPasswd
 	hash, _ := database.GetPasswd(id)
-
-	if err := bcrypt.CompareHashAndPassword(hash, oldPasswd); err != nil {
-
+	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(oldPasswd)); err != nil {
+		return 1, "原密码不正确"
+	}
+	// hash password
+	hashPasswd, _ := bcrypt.GenerateFromPassword([]byte(passwd), bcrypt.DefaultCost)
+	// update password
+	if err := database.ChangePasswd(id, string(hashPasswd)); err != nil {
+		return 1, err
 	}
 	return 0, nil
 }

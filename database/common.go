@@ -1,21 +1,22 @@
 package database
 
-import (
-	"fmt"
+import(
+	"database/sql"
 )
 
-func FindById(id string, table string) (bool, error) {
-	var name string
-	sql := "SELECT `name` FROM " + table + " WHERE id = ?"
-	stmt, err := ConnDB().Prepare(sql)
-	// IF error
+func FindById(id string, table string) (int, error) {
+	var (
+		name string
+		Sql = "SELECT `name` FROM " + table + " WHERE id = ?"
+	)
+	err := ConnDB().QueryRow(Sql, id).Scan(&name)
+	// not found
+	if err == sql.ErrNoRows {
+		return -1, nil
+	}
+	// error
 	if err != nil {
-		return false, err
+		return 1, err
 	}
-	err = stmt.QueryRow(id).Scan(&name)
-	fmt.Println(name, "==========")
-	if err != nil || name == "" {
-		return false, err
-	}
-	return true, nil
+	return 0, nil
 }
