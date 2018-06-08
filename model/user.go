@@ -18,7 +18,15 @@ type User struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
-
-type UserList struct {
-	Data []*User `json:"data"`
+// 登录返回的token
+type TokenAndUser struct {
+	Id          int       `json:"id"`            //用户ID
+	RoleId      int       `json:"role_id"`       //角色id
+	Name        string    `json:"name"`          //用户名
+	Email       string    `json:"email"`         //电子邮箱
+	Mobile      string    `json:"mobile"`        //电话
+	Password    string    `json:"password"`      //密码
+	Status      int       `json:"status"`        //状态
+	CheckStatus int       `json:"check_status"`  //审核状态
+	Token       string    `json:"token"`         //token
 }

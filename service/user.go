@@ -6,7 +6,6 @@ import (
 
 	"portal/database"
 	"portal/common"
-	"portal/model"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,11 +17,6 @@ func Signin(email, passwd string) (int, interface{}) {
 	if err != nil {
 		return 10001, "账户不存在"
 	}
-	// user, ok := res.(model.User) 
-	// if !ok {
-	// 	return 1, "服务出错"
-	// }
-	fmt.Println(user)
 	// 审核状态
 	switch user.CheckStatus {
 		case 1:
@@ -41,11 +35,11 @@ func Signin(email, passwd string) (int, interface{}) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(passwd)); err != nil {
 		return 10002, "密码不正确"
 	}
-
-	token, err := common.GenerateToken(strconv.Itoa(user.Id), strconv.Itoa(user.Role))
-	json, _ := common.Struct2Map(user)
-	json["token"] = token
-	return 0, json
+	// token
+	token, err := common.GenerateToken(strconv.Itoa(user.Id), strconv.Itoa(user.RoleId))
+	user.Token = token
+	user.Email = email
+	return 0, user
 }
 /**
  * 用户注册
@@ -79,7 +73,7 @@ func Signup(User common.SignupForm) (int, interface{})  {
  *   resutl [] *model.User
  *   msg    error
  */
-func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
+func QueryUserList(query common.UserQueryBody) ([]interface{}, error) {
 	var (
 		where string = "`u`.`status` "
 		values []string
@@ -99,7 +93,7 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
 		where += " AND `u`.`email` LIKE ?"
 		values = append(values, query.Where.Email)
 	}
-	// 审核状态
+	// 审核状态 1 未审核,2 审核通过,3 审核不通过
 	if query.Where.CheckStatus != "" {
 		where += " AND `u`.`check_status` = ?"
 		values = append(values, query.Where.CheckStatus)

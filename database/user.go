@@ -31,20 +31,26 @@ const queryUser = "SELECT "        +
 									" FROM portal_user AS u INNER JOIN portal_user_role AS r ON u.id = r.user_id" +
 									" WHERE "
 // 用户登录
-func Signin(email string) (model.User, error) {
-	var user model.User
+func Signin(email string) (data model.TokenAndUser, err error) {
+	// var user model.User
 	// 根据email查询用户
-	Sql := `SELECT id, name, password, status, check_status FROM portal_user WHERE email = ? AND status != 3`
+	Sql := `SELECT id, name, password, mobile, status, check_status FROM portal_user WHERE email = ? AND status != 3`
 	if err := ConnDB().QueryRow(Sql, email).Scan(
-		&user.Id, 
-		&user.Name, 
-		&user.Password, 
-		&user.Status,
-		&user.CheckStatus,
+		&data.Id, 
+		&data.Name,
+		&data.Password,
+		&data.Mobile,
+		&data.Status,
+		&data.CheckStatus,
 	); err != nil {
-		return user, err
+		return data, err
 	}
-	return user, nil
+	// select role id
+	if err := ConnDB().QueryRow(`SELECT role_id FROM portal_user_role WHERE user_id = ?`, 
+		data.Id).Scan(&data.RoleId); err != nil {
+			
+	}
+	return data, nil
 }
 // 新增用户
 func AddUser(User common.SignupForm) error {
@@ -82,8 +88,10 @@ func FindOneUser(where string, query ...interface{}) (model.User, bool) {
 	return user, true
 }
 // 查询用户列表
-func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
-	var result = make([]*model.User, 0)
+// func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
+func FindAllUser(where string, query ...interface{}) (data []interface{}, err error) {
+	// var result = make([]*model.User, 0)
+	var result = make([]interface{}, 0)
 	rows, err := ConnDB().Query(queryUser + where, query...)
 
 	if err != nil {

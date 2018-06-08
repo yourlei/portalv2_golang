@@ -61,7 +61,7 @@ func VerifyCaptcha(idkey, verifyValue string) (int, string) {
 		return 0, "验证成功"
 	} else {
 		//fail
-		return 10007, "该验证码已使用,请重新获取"
+		return 10007, "验证码输入不正确或已失效"
 	}
 }
 /**
