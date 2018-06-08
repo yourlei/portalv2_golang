@@ -30,8 +30,8 @@ func TestChangePasswd(t *testing.T) {
 	// var id = "35"
 	// s, err := database.FindById(id, "portal_users")
 	// pw, _ := database.GetPasswd("35")
-	code, err := service.ChangePasswd("37", "scut2017", "scut2019")
-	if code != 0 {
-		t.Error(err)
-	}
+	// code, err := service.ChangePasswd("37", "scut2017", "scut2019")
+	// if code != 0 {
+	// 	t.Error(err)
+	// }
 }

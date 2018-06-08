@@ -20,7 +20,7 @@ func Run() {
 	router.POST("/api/v1/users/signup", controller.Signup)
 	// 查询用户列表
 	router.GET("/api/v1/users", controller.QueryUser)
-	// 用户状态变更
+	// 用户状态变更(启用,禁用,注销)
 	router.PATCH("/api/v1/users/status/:id", controller.UpdateUserStatus)
 	// 审核用户
 	router.PATCH("/api/v1/users/check/:id", controller.ReviewUser)

@@ -3,11 +3,11 @@ package database
 import(
 	"database/sql"
 )
-
-func FindById(id string, table string) (int, error) {
+// Find a row by id
+func FindById(id int, table string) (int, error) {
 	var (
 		name string
-		Sql = "SELECT `name` FROM " + table + " WHERE id = ?"
+		Sql = "SELECT `name` FROM " + table + " WHERE id = ? AND deleted_at = '0000-01-01 00:00:00'"
 	)
 	err := ConnDB().QueryRow(Sql, id).Scan(&name)
 	// not found

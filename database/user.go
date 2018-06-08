@@ -8,8 +8,11 @@ import (
 )
 // 新增用户
 const addUser = "INSERT INTO" +
-								" `portal_user`(`name`, `email`, `mobile`, `password`, `created_at`)" +
+								" `portal_user`" +
+								"(`name`, `email`, `mobile`, `password`, `created_at`)" +
 								" VALUES(?, ?, ?, ?, ?)"
+// Select one user
+const findOne = "SELECT `id`, `name`, `email`, `mobile`, `status`, `check_status` FROM portal_user WHERE "
 // 插入用户ID和角色ID
 const insertUserRole = "INSERT INTO `portal_user_role`(`role_id`, `user_id`) VALUES(?, ?)"
 // 查询用户列表
@@ -28,7 +31,7 @@ const queryUser = "SELECT "        +
 									" FROM portal_user AS u INNER JOIN portal_user_role AS r ON u.id = r.user_id" +
 									" WHERE "
 // 用户登录
-func Signin(email string) (interface{}, error) {
+func Signin(email string) (model.User, error) {
 	var user model.User
 	// 根据email查询用户
 	Sql := `SELECT id, name, password, status, check_status FROM portal_user WHERE email = ? AND status != 3`
@@ -39,7 +42,7 @@ func Signin(email string) (interface{}, error) {
 		&user.Status,
 		&user.CheckStatus,
 	); err != nil {
-		return nil, err
+		return user, err
 	}
 	return user, nil
 }
@@ -63,13 +66,20 @@ func AddUser(User common.SignupForm) error {
 	return tx.Commit()
 }
 // Check email or mabile had registered
-func FindOneUser(where string, query ...interface{}) (bool, error) {
-	var name string
-	Sql := `SELECT name FROM portal_user WHERE ` + where
-	if err := ConnDB().QueryRow(Sql, query...).Scan(&name); err != nil {
-		return false, err
+func FindOneUser(where string, query ...interface{}) (model.User, bool) {
+	var user model.User
+	// Sql := `SELECT name FROM portal_user WHERE ` + where
+	if err := ConnDB().QueryRow(findOne+where, query...).Scan(
+		&user.Id,
+		&user.Name,
+		&user.Email,
+		&user.Mobile,
+		&user.Status,
+		&user.CheckStatus,
+		); err != nil {
+		return user, false
 	}
-	return true, nil
+	return user, true
 }
 // 查询用户列表
 func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
@@ -104,7 +114,7 @@ func FindAllUser(where string, query ...interface{}) (data []*model.User, err er
 	return result, nil
 }
 // 更新用户状态
-func UpdateUserStatus(id string, status int, remark string) error {
+func UpdateUserStatus(id int, status int, remark string) error {
 	var err error
 	// with remark
 	if remark != "" {
@@ -119,11 +129,11 @@ func UpdateUserStatus(id string, status int, remark string) error {
 	return nil
 }
 // 审核用户
-func ReviewUser(id string, status int, remark string) error {
+func ReviewUser(id int, status int, remark string) error {
 	var err error
 	// with remark
 	if remark != "" {
-		_, err = ConnDB().Exec("UPDATE portal_user SET `check_status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `check_status` = ?, `check_remark` = ? WHERE id = ?", status, remark, id)
 	} else {
 		_, err = ConnDB().Exec("UPDATE portal_user SET `check_status` = ? WHERE id = ?", status, id)
 	}
@@ -134,14 +144,14 @@ func ReviewUser(id string, status int, remark string) error {
 	return nil
 }
 // 编辑用户
-func EditUser(id string, sql string) error {
+func EditUser(id int, sql string) error {
 	stmt, err := ConnDB().Prepare(sql)
 	// IF error
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec()
+	_, err = stmt.Exec(id)
 	// IF error
 	if err != nil {
 		return err
@@ -149,7 +159,7 @@ func EditUser(id string, sql string) error {
 	return nil
 }
 // change password
-func ChangePasswd(id, passwd string) error{
+func ChangePasswd(id int, passwd string) error{
 	stmt, err := ConnDB().Prepare(`UPDATE portal_user SET password = ? WHERE id = ?`)
 	// IF error
 	if err != nil {
@@ -164,7 +174,7 @@ func ChangePasswd(id, passwd string) error{
 	return nil
 }
 // select password
-func GetPasswd(id string) (string, error){
+func GetPasswd(id int) (string, error){
 	var pw string
 	row := ConnDB().QueryRow(`SELECT password FROM portal_user WHERE id = ?`, id)
 	if  err := row.Scan(&pw); err != nil {

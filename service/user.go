@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strconv"
 	"fmt"
 
 	"portal/database"
@@ -12,22 +13,22 @@ import (
 // 用户登录
 // 验证用户信息,生成token
 func Signin(email, passwd string) (int, interface{}) {
-	res, _ := database.Signin(email)
+	user, err := database.Signin(email)
 	// 账户不存在
-	if res == nil {
+	if err != nil {
 		return 10001, "账户不存在"
 	}
-	user, ok := res.(model.User) 
-	if !ok {
-		return 1, "服务出错"
-	}
+	// user, ok := res.(model.User) 
+	// if !ok {
+	// 	return 1, "服务出错"
+	// }
 	fmt.Println(user)
 	// 审核状态
 	switch user.CheckStatus {
 		case 1:
 			return 10003, "账户未审核"
 		case 3:
-			return 10004, "审核不通过"
+			return 10004, "账户未通过审核"
 	}
 	// 用户状态
 	switch user.Status {
@@ -40,7 +41,11 @@ func Signin(email, passwd string) (int, interface{}) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(passwd)); err != nil {
 		return 10002, "密码不正确"
 	}
-	return 0, user
+
+	token, err := common.GenerateToken(strconv.Itoa(user.Id), strconv.Itoa(user.Role))
+	json, _ := common.Struct2Map(user)
+	json["token"] = token
+	return 0, json
 }
 /**
  * 用户注册
@@ -53,7 +58,7 @@ func Signin(email, passwd string) (int, interface{}) {
 func Signup(User common.SignupForm) (int, interface{})  {
 	// 验证邮箱,手机号是否已注册
 	where := "(`email` = ? OR `mobile` = ?) AND `deleted_at` = ?"
-	if flag, _ := database.FindOneUser(where, User.Email, User.Mobile, common.DeletedAt); flag {
+	if _, exsited := database.FindOneUser(where, User.Email, User.Mobile, common.DeletedAt); exsited {
 		return 100010, "该邮箱或是手机号已注册"
 	}
 	// 密码加密
@@ -109,7 +114,6 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
 	for i, v := range values {
 		params[i] = v
 	}
-	fmt.Print(where)
 	// 加入分页
 	params[len(values)] = query.Offset
 	params[len(values) + 1] = query.Limit
@@ -127,7 +131,7 @@ func QueryUserList(query common.UserQueryBody) ([]*model.User, error) {
  *   status: 状态值
  *   remark: 操作描述
  */
-func UpdateUserStatus(id string, status int, remark string) (int, interface{}) {
+func UpdateUserStatus(id int, status int, remark string) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
 	}
@@ -145,7 +149,7 @@ func UpdateUserStatus(id string, status int, remark string) (int, interface{}) {
  *   check_status: 状态值
  *   check_remark: 描述
  */
-func ReviewUser(id string, check_status int, check_remark string) (int, interface{}) {
+func ReviewUser(id int, check_status int, check_remark string) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
 	}
@@ -162,7 +166,7 @@ func ReviewUser(id string, check_status int, check_remark string) (int, interfac
  *   id string
  *   form struct
  */
-func EditUser(id string, form common.EditUserForm) (int, interface{}) {
+func EditUser(id int, form common.EditUserForm) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
 	}
@@ -175,6 +179,11 @@ func EditUser(id string, form common.EditUserForm) (int, interface{}) {
 		}
 		// 手机号
 		if form.Mobile != "" {
+			// 手机号是否已占用
+			_, exsited := database.FindOneUser(`mobile = ? AND id != ? AND deleted_at = ?`, form.Mobile, id, common.DeletedAt)
+			if exsited {
+				return 1, "该手机号已占用"
+			}
 			if form.Name != "" {
 				sql += ", `mobile` = " + `"` + form.Mobile + `"`
 			} else {
@@ -190,18 +199,19 @@ func EditUser(id string, form common.EditUserForm) (int, interface{}) {
 				sql += " `password` = " + `"` + string(hash) + `"`
 			}
 		}
-		sql += " WHERE `id` = " + `"` + id + `"`
+		sql += " WHERE `id` = ?"
+		fmt.Println(sql)
 		// update table
 		err := database.EditUser(id, sql)
 		if err != nil {
 			return 1, err
 		}
-		return 0, nil
 	}
 	return 0, nil
 }
 // change password
-func ChangePasswd(id string, oldPasswd, passwd string) (int, interface{}) {
+// find user => verify oldpasswd => generate hash => update
+func ChangePasswd(id int, oldPasswd, passwd string) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
 	}

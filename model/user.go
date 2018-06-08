@@ -5,7 +5,7 @@ import (
 // 用户结构体
 // 用户列表字段
 type User struct {
-	Id          string    `json:"id"`            //用户ID
+	Id          int       `json:"id"`            //用户ID
 	Name        string    `json:"name"`          //用户名
 	Role        int       `json:"role"`          //角色ID
 	Mobile      string    `json:"mobile"`        //电话

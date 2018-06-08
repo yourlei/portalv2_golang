@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"strconv"
 	"encoding/json"
 	"net/http"
 	"fmt"
@@ -75,7 +76,6 @@ func Signup(c *gin.Context) {
 	r.Error.Msg = msg
 	c.JSON(http.StatusOK, r)
 }
-
 // 查询用户与列表
 func QueryUser(c *gin.Context) {
 	var (
@@ -108,11 +108,14 @@ func UpdateUserStatus(c *gin.Context) {
 		Remark string `json:"remark" binding:"required"`
 	}
 	var body JsonBody
-	if err := c.BindJSON(&body); err != nil {
+	// id string convert int
+	id, errStr := strconv.Atoi(c.Param("id"))
+	err := c.BindJSON(&body)
+	if errStr != nil || err != nil {
 		common.RespondBadRequest(c)
     return
 	}
-	code, errMsg := service.UpdateUserStatus(c.Param("id"), body.Status, body.Remark)
+	code, errMsg := service.UpdateUserStatus(id, body.Status, body.Remark)
 	r := &common.BaseResponse{
 		Code: code,
 	}
@@ -127,11 +130,14 @@ func ReviewUser(c *gin.Context) {
 		Remark string `json:"check_remark" binding:"required"`
 	}
 	var body JsonBody
-	if err := c.BindJSON(&body); err != nil {
+	// id string convert int
+	id, errStr := strconv.Atoi(c.Param("id"))
+	err := c.BindJSON(&body)
+	if errStr != nil || err != nil {
 		common.RespondBadRequest(c)
     return
 	}
-	code, errMsg := service.ReviewUser(c.Param("id"), body.Status, body.Remark)
+	code, errMsg := service.ReviewUser(id, body.Status, body.Remark)
 	r := &common.BaseResponse{
 		Code: code,
 	}
@@ -141,12 +147,14 @@ func ReviewUser(c *gin.Context) {
 // EditUser
 func EditUser(c *gin.Context) {
 	var body common.EditUserForm
-
-	if err := c.BindJSON(&body); err != nil {
+	// id string convert int
+	id, errStr := strconv.Atoi(c.Param("id"))
+	err := c.BindJSON(&body)
+	if errStr != nil || err != nil {
 		common.RespondBadRequest(c)
     return
 	}
-	code, errMsg := service.EditUser(c.Param("id"), body)
+	code, errMsg := service.EditUser(id, body)
 	r := &common.BaseResponse{
 		Code: code,
 	}
@@ -159,12 +167,14 @@ func ChangePasswd(c *gin.Context) {
 		OldPasswd string `json:"passwd"`
 		NewPasswd string `json:"new_passwd"`
 	}
-	var pw Password
-	if err := c.BindJSON(&pw); err != nil {
+	var body Password
+	id, errStr := strconv.Atoi(c.Param("id"))
+	err := c.BindJSON(&body)
+	if errStr != nil || err != nil {
 		common.RespondBadRequest(c)
     return
 	}
-	code, errMsg := service.ChangePasswd(c.Param("id"), pw.OldPasswd, pw.NewPasswd)
+	code, errMsg := service.ChangePasswd(id, body.OldPasswd, body.NewPasswd)
 	r := &common.BaseResponse{
 		Code: code,
 	}
