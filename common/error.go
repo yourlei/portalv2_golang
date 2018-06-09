@@ -8,3 +8,7 @@ type error interface {
 // func (e errors) Error(msg string) string {
 //     return msg
 // }
+type ErrorCode struct {
+    Success int
+    Error   int
+}
