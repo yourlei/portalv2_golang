@@ -9,7 +9,7 @@ import (
 type User struct {
 	Id          int       `json:"id"`            //用户ID
 	Name        string    `json:"name"`          //用户名
-	Role        int       `json:"role"`          //角色ID
+	Role        string    `json:"role"`          //角色名称
 	Mobile      string    `json:"mobile"`        //电话
 	Email       string    `json:"email"`         //电子邮箱
 	Password    string    `json:"-"`             //密码

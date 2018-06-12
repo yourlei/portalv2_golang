@@ -184,18 +184,4 @@ func ChangePasswd(c *gin.Context) {
 // test query
 func Test(c *gin.Context) {
 	fmt.Println("hi girl")
-
-	// type responseBody struct{
-	// 	Code int    `json:"code"`
-	// 	Msg  error  `json:"msg"`
-	// }
-	// var str = `{"code": 0, "msg": "fail"}`
-	// var d responseBody
-
-	// var dat = &responseBody{Code: 0, Msg: errors.New("error down")}
-
-	// if err := json.Unmarshal([]byte(str), &d); err != nil {
-	// 	fmt.Println(err)
-	// }
-	// c.JSON(http.StatusOK, dat)
 }

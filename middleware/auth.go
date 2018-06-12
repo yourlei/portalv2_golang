@@ -23,9 +23,13 @@ func parseToken(tokenString string) (*MyClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.AppConfig.TokenSecrect), nil
 	})
+	// 无效的token
+	if err != nil {
+		return nil, err
+	}
 	// validate
 	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
-			fmt.Printf("%v %v", claims.UserId, claims.StandardClaims.ExpiresAt)
+			// fmt.Printf("%v %v", claims.UserId, claims.StandardClaims.ExpiresAt)
 			return claims, nil
 	} else {
 			fmt.Println("valid fail: ", err)
@@ -41,12 +45,12 @@ func SigninRequired(c *gin.Context) {
 		return
 	}
 	claims, err := parseToken(token.Value)
-	fmt.Println(claims)
 	if err != nil {
 		fmt.Println("error: ",err)
 		util.RequireSignin(c)
 		return
 	}
+	fmt.Println(claims.ExpiresAt)
 
 	c.Next()
 }
@@ -79,7 +83,7 @@ func AdminRequired(c *gin.Context) {
 	roleID, _ := strconv.Atoi(role)
 	// 非管理员角色
 	if roleID != 1 {
-		util.RequireSignin(c)
+		util.RequireAdmin(c)
 		return
 	} 
 	c.Next()

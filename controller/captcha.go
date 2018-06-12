@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 // 生成图片验证码
-func Create(c *gin.Context)  {
+func CreatePngData(c *gin.Context)  {
 	uuid, base64String := service.GenerateCaptcha()
 	
 	c.JSON(200, gin.H{

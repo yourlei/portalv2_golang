@@ -24,6 +24,16 @@ func RequireSignin(c *gin.Context) {
 	})
 	c.Abort()
 }
+// admin required
+func RequireAdmin(c *gin.Context) {
+	c.JSON(http.StatusUnauthorized, gin.H{
+		"code": 1,
+		"error": gin.H{
+			"msg": "没有访问权限",
+		},
+	})
+	c.Abort()
+}
 // Response
 type BaseResponse struct {
 	Code  int   `json:"code"`

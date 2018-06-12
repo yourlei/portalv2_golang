@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"time"
 	
 	"portal/model"
@@ -15,19 +16,21 @@ const findOne = "SELECT `id`, `name`, `email`, `mobile`, `status`, `check_status
 // 插入用户ID和角色ID
 const insertUserRole = "INSERT INTO `portal_user_role`(`role_id`, `user_id`) VALUES(?, ?)"
 // 查询用户列表
-const queryUser = "SELECT "        +
-									" `u`.`id`,"     +
-									" `u`.`name`,"   +
-									" `u`.`email`,"  +
-									" `u`.`mobile`," + 
-									" `u`.`status`," +
+const queryUser = "SELECT "                 +
+									" `u`.`id`,"              +
+									" `u`.`name`,"            +
+									" `u`.`email`,"           +
+									" `u`.`mobile`,"          + 
+									" `u`.`status`,"          +
 									" `u`.`remark`,"          +
 									" `u`.`check_status`,"    +
 									" `u`.`check_remark`,"    +
-									" `r`.`role_id` AS role," +
+									" `r`.`name` AS role,"    +
 									" `u`.`created_at`,"      +
 									" `u`.`updated_at`"       +
-									" FROM portal_user AS u INNER JOIN portal_user_role AS r ON u.id = r.user_id" +
+									" FROM portal_user AS u"  +
+									" INNER JOIN portal_user_role AS ur ON u.id = ur.user_id" +
+									" INNER JOIN portal_role AS r ON r.id = ur.role_id"       +
 									" WHERE "
 // 用户登录
 func Signin(email string) (data model.TokenAndUser, err error) {
@@ -73,7 +76,6 @@ func AddUser(User model.SignupForm) error {
 // Check email or mabile had registered
 func FindOneUser(where string, query ...interface{}) (model.User, bool) {
 	var user model.User
-	// Sql := `SELECT name FROM portal_user WHERE ` + where
 	if err := ConnDB().QueryRow(findOne+where, query...).Scan(
 		&user.Id,
 		&user.Name,
@@ -87,13 +89,12 @@ func FindOneUser(where string, query ...interface{}) (model.User, bool) {
 	return user, true
 }
 // 查询用户列表
-// func FindAllUser(where string, query ...interface{}) (data []*model.User, err error) {
 func FindAllUser(where string, query ...interface{}) (data []interface{}, err error) {
-	// var result = make([]*model.User, 0)
 	var result = make([]interface{}, 0)
 	rows, err := ConnDB().Query(queryUser + where, query...)
 
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
