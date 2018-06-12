@@ -111,7 +111,7 @@ func Signup(User model.SignupForm) (int, interface{})  {
  *   resutl [] *model.User
  *   msg    error
  */
-func QueryUserList(query model.UserQueryBody) ([]interface{}, error) {
+func GetUserList(query model.UserQueryBody) ([]interface{}, error) {
 	var (
 		where string = "`u`.`status` "
 		values []string

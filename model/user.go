@@ -56,10 +56,6 @@ type EditUserForm struct {
 /* *******************
  *    query body
  * ******************/
-type QueryParams struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
-}
 // 用户列表查询条件
 type UserWhere struct {
 	Email       string    `json:"email,omitempty"`
@@ -69,7 +65,7 @@ type UserWhere struct {
 	CheckStatus string    `json:"check_status,omitempty"`
 	CreatedAt   string    `json:"created_at,omitempty"`
 }
-
+// (query params where + offset + limit)
 type UserQueryBody struct {
 	QueryParams
 	Where UserWhere `json:"where"`

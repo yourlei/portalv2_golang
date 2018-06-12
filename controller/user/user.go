@@ -1,10 +1,9 @@
-package controller
+package user
 
 import (
 	"strconv"
-	"encoding/json"
 	"net/http"
-	"fmt"
+	"encoding/json"
 
 	"portal/util"
 	"portal/model"
@@ -78,7 +77,7 @@ func Signup(c *gin.Context) {
 	c.JSON(http.StatusOK, r)
 }
 // 查询用户与列表
-func QueryUser(c *gin.Context) {
+func QueryUserList(c *gin.Context) {
 	var (
 		code = 0
 		queryJson model.UserQueryBody
@@ -88,7 +87,7 @@ func QueryUser(c *gin.Context) {
 		util.RespondBadRequest(c)
 		return
 	}
-	res, msg := service.QueryUserList(queryJson)
+	res, msg := service.GetUserList(queryJson)
 	if msg != nil {
 		code = 1
 	}
@@ -193,8 +192,4 @@ func ChangePasswd(c *gin.Context) {
 	}
 	r.Error.Msg = errMsg
 	c.JSON(http.StatusOK, r)
-}
-// test query
-func Test(c *gin.Context) {
-	fmt.Println("hi girl")
 }

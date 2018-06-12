@@ -1,4 +1,4 @@
-package controller
+package captcha
 
 import (
 	"portal/service"

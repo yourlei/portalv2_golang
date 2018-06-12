@@ -2,6 +2,9 @@ package router
 
 import (
 	"portal/controller"
+	"portal/controller/captcha"
+	"portal/controller/user"
+	"portal/controller/role"
 	"portal/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -13,23 +16,24 @@ func Run() {
   // 根路由
 	router.GET("/", controller.Home)
 	// 获取验证码
-	router.GET("/api/v1/image/base64", controller.CreatePngData)
+	router.GET("/api/v1/image/base64", captcha.CreatePngData)
 	// 用户登录
-	router.POST("/api/v1/users/signin", controller.Signin)
+	router.POST("/api/v1/users/signin", user.Signin)
 	// 用户注册
-	router.POST("/api/v1/users/signup", controller.Signup)
+	router.POST("/api/v1/users/signup", user.Signup)
 	// 查询用户列表
-	router.GET("/api/v1/users", controller.QueryUser)
+	router.GET("/api/v1/users", user.QueryUserList)
 	// 用户状态变更(启用,禁用,注销)
-	router.PATCH("/api/v1/users/status/:id", controller.UpdateUserStatus)
+	router.PATCH("/api/v1/users/status/:id", user.UpdateUserStatus)
 	// 审核用户
-	router.PATCH("/api/v1/users/check/:id", controller.ReviewUser)
+	router.PATCH("/api/v1/users/check/:id", user.ReviewUser)
 	// 编辑用户
-	router.PATCH("/api/v1/users/edit/:id", controller.EditUser)
+	router.PATCH("/api/v1/users/edit/:id", user.EditUser)
 	// 更新密码
-	router.PATCH("/api/v1/users/password/:id", middleware.SigninRequired, controller.ChangePasswd)
-	
-	router.GET("/api/v1/test", controller.Test)
+	router.PATCH("/api/v1/users/password/:id", middleware.SigninRequired, user.ChangePasswd)
+	// Role module 
+	router.GET("/api/v1/roles", role.QueryRoleList)
+	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")
 }

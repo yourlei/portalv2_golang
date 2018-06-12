@@ -1,22 +1,22 @@
 package database
 
 import (
-	"fmt"
 	"time"
 	
+	"portal/util"
 	"portal/model"
 )
 // 新增用户
 const addUser = "INSERT INTO" +
 								" `portal_user`" +
-								"(`name`, `email`, `mobile`, `password`, `created_at`)" +
-								" VALUES(?, ?, ?, ?, ?)"
+								"(`name`, `email`, `mobile`, `password`, `created_at`, `updated_at`)" +
+								" VALUES(?, ?, ?, ?, ?, ?)"
 // Select one user
 const findOne = "SELECT `id`, `name`, `email`, `mobile`, `status`, `check_status` FROM portal_user WHERE "
 // 插入用户ID和角色ID
 const insertUserRole = "INSERT INTO `portal_user_role`(`role_id`, `user_id`) VALUES(?, ?)"
 // 查询用户列表
-const queryUser = "SELECT "                 +
+const selectUser = "SELECT "                 +
 									" `u`.`id`,"              +
 									" `u`.`name`,"            +
 									" `u`.`email`,"           +
@@ -61,7 +61,7 @@ func AddUser(User model.SignupForm) error {
 		return txErr
 	}
 	// add row to user table
-	result, err1 := tx.Exec(addUser, User.Name, User.Email, User.Mobile, User.Password, time.Now().Format("2006-01-02 15:04:05"))
+	result, err1 := tx.Exec(addUser, User.Name, User.Email, User.Mobile, User.Password, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
 	if err1 != nil {
 		return err1
 	}
@@ -91,10 +91,9 @@ func FindOneUser(where string, query ...interface{}) (model.User, bool) {
 // 查询用户列表
 func FindAllUser(where string, query ...interface{}) (data []interface{}, err error) {
 	var result = make([]interface{}, 0)
-	rows, err := ConnDB().Query(queryUser + where, query...)
+	rows, err := ConnDB().Query(selectUser + where, query...)
 
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -132,7 +131,7 @@ func UpdateUserStatus(id int, status int, remark string) error {
 			_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ? WHERE id = ?", status, id)
 		}
 	} else {
-		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ?, `remark` = ?, `deleted_at` = ? WHERE id = ?", status, remark, time.Now().Format("2006-01-02 15:04:05"), id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ?, `remark` = ?, `deleted_at` = ? WHERE id = ?", status, remark, time.Now().Format(util.TimeFormat), id)
 	}
 	// IF error
 	if err != nil {
