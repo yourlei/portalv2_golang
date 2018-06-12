@@ -4,7 +4,6 @@ import (
 	"time"
 	
 	"portal/model"
-	"portal/common"
 )
 // 新增用户
 const addUser = "INSERT INTO" +
@@ -53,7 +52,7 @@ func Signin(email string) (data model.TokenAndUser, err error) {
 	return data, nil
 }
 // 新增用户
-func AddUser(User common.SignupForm) error {
+func AddUser(User model.SignupForm) error {
 	tx, txErr := ConnDB().Begin()
 	if txErr != nil {
 		return txErr

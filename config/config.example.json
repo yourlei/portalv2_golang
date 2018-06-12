@@ -1,0 +1,6 @@
+{
+  "app": {
+    "TokenSecrect": "dcfcd07e645d245babe887e5e2daa016",
+    "TokenMaxAge": 3600
+  }
+}

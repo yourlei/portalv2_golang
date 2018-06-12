@@ -2,11 +2,15 @@ package service
 
 import (
 	"strconv"
+	"time"
 	"fmt"
 
 	"portal/database"
-	"portal/common"
+	"portal/config"
+	"portal/model"
+	"portal/util"
 
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 // 用户登录
@@ -36,23 +40,57 @@ func Signin(email, passwd string) (int, interface{}) {
 		return 10002, "密码不正确"
 	}
 	// token
-	token, err := common.GenerateToken(strconv.Itoa(user.Id), strconv.Itoa(user.RoleId))
+	token, err := generateToken(strconv.Itoa(user.Id), strconv.Itoa(user.RoleId))
+	// set cookie
 	user.Token = token
 	user.Email = email
 	return 0, user
+}
+// claims
+type MyClaims struct {
+	UserId string `json:"userId,omitempty"`
+	RoleId string `json:"roleId,omitempty"`
+	jwt.StandardClaims
+}
+// Generate Token
+func generateToken(userId, roleId string) (string, error) {
+	AppConf := config.AppConfig
+	maxAge, _ := strconv.ParseInt(strconv.Itoa(AppConf.TokenMaxAge), 10, 64)
+	// 失效时间
+	expireTime := time.Now().Add(time.Duration(maxAge)*time.Second)
+	// 加密userid, roleid
+	userId, _ = util.Encrypt([]byte(AppConf.AesKey), userId)
+	roleId, _ = util.Encrypt([]byte(AppConf.AesKey), roleId)
+	// Create the Claims
+	claims := MyClaims{
+		userId,
+		roleId,
+		jwt.StandardClaims {
+			ExpiresAt: expireTime.Unix(),
+			Issuer:    "yourlin127@gmail.com",
+		},
+	}
+	// Create token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	ss, err := token.SignedString([]byte(AppConf.TokenSecrect))
+	// IF error
+	if err != nil {
+		return "",err
+	}
+	return ss, nil
 }
 /**
  * 用户注册
  * @params 
  *   User struct (post body)
  * @return
- *   code int (0: 成功)
+ *   code int
  *   msg  error
  */
-func Signup(User common.SignupForm) (int, interface{})  {
+func Signup(User model.SignupForm) (int, interface{})  {
 	// 验证邮箱,手机号是否已注册
 	where := "(`email` = ? OR `mobile` = ?) AND `deleted_at` = ?"
-	if _, exsited := database.FindOneUser(where, User.Email, User.Mobile, common.DeletedAt); exsited {
+	if _, exsited := database.FindOneUser(where, User.Email, User.Mobile, model.DeletedAt); exsited {
 		return 100010, "该邮箱或是手机号已注册"
 	}
 	// 密码加密
@@ -73,7 +111,7 @@ func Signup(User common.SignupForm) (int, interface{})  {
  *   resutl [] *model.User
  *   msg    error
  */
-func QueryUserList(query common.UserQueryBody) ([]interface{}, error) {
+func QueryUserList(query model.UserQueryBody) ([]interface{}, error) {
 	var (
 		where string = "`u`.`status` "
 		values []string
@@ -160,7 +198,7 @@ func ReviewUser(id int, check_status int, check_remark string) (int, interface{}
  *   id string
  *   form struct
  */
-func EditUser(id int, form common.EditUserForm) (int, interface{}) {
+func EditUser(id int, form model.EditUserForm) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
 	}
@@ -174,7 +212,7 @@ func EditUser(id int, form common.EditUserForm) (int, interface{}) {
 		// 手机号
 		if form.Mobile != "" {
 			// 手机号是否已占用
-			_, exsited := database.FindOneUser(`mobile = ? AND id != ? AND deleted_at = ?`, form.Mobile, id, common.DeletedAt)
+			_, exsited := database.FindOneUser(`mobile = ? AND id != ? AND deleted_at = ?`, form.Mobile, id, model.DeletedAt)
 			if exsited {
 				return 1, "该手机号已占用"
 			}

@@ -9,7 +9,7 @@ func Cors(c *gin.Context) {
 	if "OPTIONS" == c.Request.Method {
 		c.Status(200)
 	}
-	c.Header("Access-Control-Allow-Origin", "http://127.0.0.1:8020")
+	c.Header("Access-Control-Allow-Origin", "http://127.0.0.1:3000")
 	c.Header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,PATCH,OPTIONS")
 	c.Header("Access-Control-Allow-Credentials", "true")
 	c.Header("Content-Type", "application/json; charset=utf-8")

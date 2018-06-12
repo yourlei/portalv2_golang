@@ -6,18 +6,19 @@ import (
 	"net/http"
 	"fmt"
 
+	"portal/util"
+	"portal/model"
+	"portal/config"
 	"portal/service"
-	"portal/common"
 
 	"github.com/gin-gonic/gin"
-	"github.com/asaskevich/govalidator"
 )
 // 账户登录
 func Signin(c *gin.Context) {
-	var loginInfo common.LoginForm
+	var loginInfo model.LoginForm
 	
 	if err := c.BindJSON(&loginInfo); err != nil {
-		common.RespondBadRequest(c)
+		util.RespondBadRequest(c)
     return
 	}
 	// 检查验证码
@@ -33,6 +34,16 @@ func Signin(c *gin.Context) {
 	code, data := service.Signin(loginInfo.Email, loginInfo.Password)
 	msg, ok := data.(string)
 	if !ok {
+		// set cookie
+		d, _ := data.(model.TokenAndUser)
+		cookie := &http.Cookie{
+			Name:     "token",
+			Value:    d.Token,
+			Path:     "/",
+			HttpOnly: false,
+			MaxAge:   config.AppConfig.TokenMaxAge,
+		}
+		http.SetCookie(c.Writer, cookie)
 		c.JSON(http.StatusOK, gin.H{
 			"code": code,
 			"error": gin.H{
@@ -48,29 +59,18 @@ func Signin(c *gin.Context) {
 			},
 		})
 	}
-	
-
 }
 // 用户注册
 func Signup(c *gin.Context) {
-	var signupInfo common.SignupForm
+	var signupInfo model.SignupForm
 	// var msg string
-	if err := c.BindJSON(&signupInfo); err != nil || len(signupInfo.Mobile) > 11 {
-		common.RespondBadRequest(c)
+	if err := c.BindJSON(&signupInfo); err != nil {
+		util.RespondBadRequest(c)
     return
-	}
-	// 验证注册信息
-	if ok, err := govalidator.ValidateStruct(signupInfo); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": 1,
-			"msg": err,
-		})
-	} else {
-		fmt.Printf("OK: %v\n", ok)
 	}
 	// code
 	code, msg := service.Signup(signupInfo)
-	r := &common.BaseResponse{
+	r := &util.BaseResponse{
 		Code: code,
 	}
 	r.Error.Msg = msg
@@ -80,11 +80,11 @@ func Signup(c *gin.Context) {
 func QueryUser(c *gin.Context) {
 	var (
 		code = 0
-		queryJson common.UserQueryBody
+		queryJson model.UserQueryBody
 	)
 	// json string 转为 struct
 	if err := json.Unmarshal([]byte(c.Query("query")), &queryJson); err != nil {
-		common.RespondBadRequest(c)
+		util.RespondBadRequest(c)
 		return
 	}
 	res, msg := service.QueryUserList(queryJson)
@@ -112,11 +112,11 @@ func UpdateUserStatus(c *gin.Context) {
 	id, errStr := strconv.Atoi(c.Param("id"))
 	err := c.BindJSON(&body)
 	if errStr != nil || err != nil {
-		common.RespondBadRequest(c)
+		util.RespondBadRequest(c)
     return
 	}
 	code, errMsg := service.UpdateUserStatus(id, body.Status, body.Remark)
-	r := &common.BaseResponse{
+	r := &util.BaseResponse{
 		Code: code,
 	}
 	r.Error.Msg = errMsg
@@ -134,11 +134,11 @@ func ReviewUser(c *gin.Context) {
 	id, errStr := strconv.Atoi(c.Param("id"))
 	err := c.BindJSON(&body)
 	if errStr != nil || err != nil {
-		common.RespondBadRequest(c)
+		util.RespondBadRequest(c)
     return
 	}
 	code, errMsg := service.ReviewUser(id, body.Status, body.Remark)
-	r := &common.BaseResponse{
+	r := &util.BaseResponse{
 		Code: code,
 	}
 	r.Error.Msg = errMsg
@@ -146,16 +146,16 @@ func ReviewUser(c *gin.Context) {
 }
 // EditUser
 func EditUser(c *gin.Context) {
-	var body common.EditUserForm
+	var body model.EditUserForm
 	// id string convert int
 	id, errStr := strconv.Atoi(c.Param("id"))
 	err := c.BindJSON(&body)
 	if errStr != nil || err != nil {
-		common.RespondBadRequest(c)
+		util.RespondBadRequest(c)
     return
 	}
 	code, errMsg := service.EditUser(id, body)
-	r := &common.BaseResponse{
+	r := &util.BaseResponse{
 		Code: code,
 	}
 	r.Error.Msg = errMsg
@@ -171,11 +171,11 @@ func ChangePasswd(c *gin.Context) {
 	id, errStr := strconv.Atoi(c.Param("id"))
 	err := c.BindJSON(&body)
 	if errStr != nil || err != nil {
-		common.RespondBadRequest(c)
+		util.RespondBadRequest(c)
     return
 	}
 	code, errMsg := service.ChangePasswd(id, body.OldPasswd, body.NewPasswd)
-	r := &common.BaseResponse{
+	r := &util.BaseResponse{
 		Code: code,
 	}
 	r.Error.Msg = errMsg

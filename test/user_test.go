@@ -3,7 +3,7 @@ package test
 import (
 	// "fmt"
 	"testing"
-	"portal/service"
+	// "portal/service"
 	"portal/database"
 )
 
@@ -26,7 +26,7 @@ import (
 // }
 
 func TestChangePasswd(t *testing.T) {
-	database.OpenDB("portal:D024Ad41d8cd98f00b204@tcp(192.168.80.243:3306)/portal?parseTime=true")
+	// database.OpenDB("portal:D024Ad41d8cd98f00b204@tcp(192.168.80.243:3306)/portal?parseTime=true")
 	// var id = "35"
 	// s, err := database.FindById(id, "portal_users")
 	// pw, _ := database.GetPasswd("35")
