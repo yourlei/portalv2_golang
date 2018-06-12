@@ -19,7 +19,7 @@ type MyClaims struct {
     jwt.StandardClaims
 }
 // Parse token
-func parseToken(tokenString string) (*MyClaims, error) {
+func ParseToken(tokenString string) (*MyClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.AppConfig.TokenSecrect), nil
 	})
@@ -44,9 +44,8 @@ func SigninRequired(c *gin.Context) {
 		util.RequireSignin(c)
 		return
 	}
-	claims, err := parseToken(token.Value)
+	claims, err := ParseToken(token.Value)
 	if err != nil {
-		fmt.Println("error: ",err)
 		util.RequireSignin(c)
 		return
 	}
@@ -63,13 +62,12 @@ func AdminRequired(c *gin.Context) {
 	)
 	// Get cookie
 	token, err = c.Request.Cookie("token")
-	fmt.Println(token, err)
 	if err != nil {
 		util.RequireSignin(c)
 		return
 	}
 	// Parse Token
-	claims, err = parseToken(token.Value)
+	claims, err = ParseToken(token.Value)
 	if err != nil {
 		fmt.Println("error: ",err)
 		util.RequireSignin(c)

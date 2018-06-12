@@ -10,6 +10,7 @@ import (
 	"portal/model"
 	"portal/config"
 	"portal/service"
+	"portal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -173,6 +174,18 @@ func ChangePasswd(c *gin.Context) {
 	if errStr != nil || err != nil {
 		util.RespondBadRequest(c)
     return
+	}
+	// token 中的userid与params id 是否一致
+	token, _ := c.Request.Cookie("token")
+	claims, _ := middleware.ParseToken(token.Value)
+	userId, decryptErr := util.Decrypt([]byte(config.AppConfig.AesKey), claims.UserId)
+	if decryptErr != nil {
+		util.RequireSignin(c)
+		return
+	}
+	if userId != c.Param("id") {
+		util.RespondBadRequest(c)
+		return
 	}
 	code, errMsg := service.ChangePasswd(id, body.OldPasswd, body.NewPasswd)
 	r := &util.BaseResponse{

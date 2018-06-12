@@ -68,7 +68,6 @@ error: {
 |4000xx | 权限相关的错误码  |
 |5000xx | 数据集管理相关的错误码  |
 
-
 ## 0.2 状态码
 
 - 200: GET请求成功, 及DELETE或PATCH同步请求完成，或者PUT同步更新一个已存在的资源
@@ -80,6 +79,11 @@ error: {
 - 404 Not found: 资源不存在
 
 - 500 Internal Server Error: 服务器错误，确认状态并报告问题
+
+## 0.3 接口权限说明
+
+- token: 表示调用该接口须携带登录后服务端发放的token
+- token + admin: 表示调用该接口须携带token, 同时用户所在角色组为管理员
 
 ---
 
@@ -215,6 +219,7 @@ error: {
 
 - 请求方式: patch
 - URL: domain/users/status/:id
+- 权限: token + admin
 
 - 参数
 
@@ -248,6 +253,7 @@ error: {
 
 - 请求方式: patch
 - URL: domain/users/check/:id
+- 权限: token + admin
 
 - 参数
 
@@ -280,6 +286,7 @@ error: {
 
 - 请求方式: patch
 - URL: domain/users/edit/:id
+- 权限: token + admin
 
 - 参数
 
@@ -321,6 +328,7 @@ error: {
 
 - 请求方式: post
 - URL: domain/api/v1/admin/passwd/change
+- 权限: token 
 
 - 请求参数:
 
@@ -348,6 +356,7 @@ error: {
 
 - 请求方式: get
 - URL: domain/api/v1/users?query={body}
+- 权限: token + admin
 
 - body参数:
 

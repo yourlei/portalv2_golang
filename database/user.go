@@ -124,11 +124,15 @@ func FindAllUser(where string, query ...interface{}) (data []interface{}, err er
 // 更新用户状态
 func UpdateUserStatus(id int, status int, remark string) error {
 	var err error
-	// with remark
-	if remark != "" {
-		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
+	// IF status = 3 then cancel accoutn, set deleted_at value
+	if 3 != status {
+		if remark != "" {
+			_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ?, `remark` = ? WHERE id = ?", status, remark, id)
+		} else {
+			_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ? WHERE id = ?", status, id)
+		}
 	} else {
-		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ? WHERE id = ?", status, id)
+		_, err = ConnDB().Exec("UPDATE portal_user SET `status` = ?, `remark` = ?, `deleted_at` = ? WHERE id = ?", status, remark, time.Now().Format("2006-01-02 15:04:05"), id)
 	}
 	// IF error
 	if err != nil {

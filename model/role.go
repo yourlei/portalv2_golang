@@ -1,12 +1,14 @@
 package model
+import (
+	"time"
+)
 
 //角色结构体
 type Role struct {
-	ID        string //角色ID
-	Name      string //角色名
-	Desc      string //描述
-	Status    string //状态
-	CreatedAt string //创建时间
-	UpdatedAt string //更新时间
-	DeletedAt string //删除时间
+	Id        int       `json:"id" binding:"min=1"`    //角色ID
+	Name      string    `json:"name"`                  //角色名
+	Remark    string    `json:"remark"`                //描述
+	Status    int       `json:"status" binding:"min=1"`//状态
+	CreatedAt time.Time `json:"created_at"`            //创建时间
+	UpdatedAt time.Time `json:"updated_at"`            //更新时间
 }

@@ -27,7 +27,7 @@ func Run() {
 	// 编辑用户
 	router.PATCH("/api/v1/users/edit/:id", controller.EditUser)
 	// 更新密码
-	router.PATCH("/api/v1/users/password/:id", controller.ChangePasswd)
+	router.PATCH("/api/v1/users/password/:id", middleware.SigninRequired, controller.ChangePasswd)
 	
 	router.GET("/api/v1/test", controller.Test)
 	// listent 3000
