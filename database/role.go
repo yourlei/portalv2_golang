@@ -10,19 +10,18 @@ import (
 var createRole = `INSERT INTO portal_role(name, remark, created_at, updated_at) VALUES(?, ?, ?, ?)`
 var selectRole = `SELECT id, name, remark, created_at, updated_at FROM portal_role WHERE `
 // Create role
-func CreateRole(name, remark string) (int64, error) {
+func CreateRole(name, remark string) error {
 	tx, err := ConnDB().Begin()
 	if err != nil {
-		return 1, err
+		return err
 	}
 
-	res, err := tx.Exec(createRole, name, remark, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
+	_, err = tx.Exec(createRole, name, remark, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
 	if err != nil {
-		return 1, err
+		return err
 	}
-	id, _ := res.LastInsertId()
 	tx.Commit()
-	return id, nil
+	return nil
 }
 // Find Row by role name
 func FindRoleByName(where string, query...interface{}) (bool, error) {

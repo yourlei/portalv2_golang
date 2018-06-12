@@ -1,6 +1,7 @@
 package role
 
 import (
+	"fmt"
 	"net/http"
 	"encoding/json"
 
@@ -10,6 +11,27 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+// Create role
+func CreateRole(c *gin.Context) {
+	type role struct {
+		Name   string `json:"name,omitempty" binding:"required"`
+		Remark string `json:"remark"`
+	}
+	var jsonBody role
+	err := c.BindJSON(&jsonBody)
+	if err != nil {
+		fmt.Println(err)
+		util.RespondBadRequest(c)
+		return
+	}
+	code, msg := service.CreateRole(jsonBody.Name, jsonBody.Remark)
+	r := &util.BaseResponse{
+		Code: code,
+	}
+	r.Error.Msg = msg
+	c.JSON(http.StatusOK, r)
+}
+// Query role list
 func QueryRoleList(c *gin.Context) {
 	var (
 		queryJson *model.RoleQueryBody

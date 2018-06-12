@@ -2,12 +2,23 @@ package service
 
 import (
 	"fmt"
-	// "fmt"
 	"portal/util"
 	"portal/model"
 	"portal/database"
 )
-// Find User List
+// Create role
+func CreateRole(name, remark string) (int, interface{})  {
+	exsited, err := database.FindRoleByName(`name = ?`, name)
+	if err == nil && exsited {
+		return 20001, "该角色已存在"
+	}
+	err = database.CreateRole(name, remark)
+	if err != nil {
+		return 1, err
+	}
+	return 0, nil
+}
+// Query role list
 func GetRoleList(query *model.RoleQueryBody) ([]interface{}, error) {
 	fmt.Println(query)
 	var (

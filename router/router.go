@@ -31,8 +31,10 @@ func Run() {
 	router.PATCH("/api/v1/users/edit/:id", user.EditUser)
 	// 更新密码
 	router.PATCH("/api/v1/users/password/:id", middleware.SigninRequired, user.ChangePasswd)
-	// Role module 
+	// 角色列表
 	router.GET("/api/v1/roles", role.QueryRoleList)
+	// 创建角色
+	router.POST("/api/v1/roles", role.CreateRole)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")
