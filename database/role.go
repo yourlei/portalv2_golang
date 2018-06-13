@@ -9,6 +9,14 @@ import (
 
 var createRole = `INSERT INTO portal_role(name, remark, created_at, updated_at) VALUES(?, ?, ?, ?)`
 var selectRole = `SELECT id, name, remark, created_at, updated_at FROM portal_role WHERE `
+var selectUserByRole = `SELECT`           +              
+												` u.id,`          +
+												` u.name`         +
+										`	FROM`               +
+											`	portal_user AS u` +
+											` WHERE`            +
+												` u.id IN ( SELECT ur.user_id FROM portal_user_role AS ur WHERE ur.role_id = ? )` +
+												` AND status != 3`
 // Create role
 func CreateRole(name, remark string) error {
 	tx, err := ConnDB().Begin()
@@ -50,36 +58,27 @@ func FindRoleByName(where string, query...interface{}) (bool, error) {
 	return len(list) > 0, nil
 }
 // Update Role Info
-func UpdateRole(id int, name, remark string) error {
-	var Sql string
-	if remark != "" {
-		Sql = `UPDATE portal_role SET name =` + 
-					`"` + name + `"` + `, remark = ` + 
-					`"` + remark + `"` + `, updated_at = ? WHERE id = ?`
-	} else {
-		Sql = `UPDATE portal_role SET name = ` +
-					`"` + name + `"` +
-		      `, deleted_at =　? WHERE id = ?`
-	}
-	_, err := ConnDB().Exec(Sql, time.Now().Format(util.TimeFormat), id)
+func UpdateRole(where string, query...interface{}) error {
+	var Sql string = `UPDATE portal_role SET `
+	_, err := ConnDB().Exec(Sql+where, query...)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 // Delete Role, set status = 2 
-func DeleteRole(id int) (bool, error) {
+func DeleteRole(id int) (int, error) {
 	Sql := `UPDATE portal_role SET status = ?, deleted_at = ? WHERE id = ?`
 	stmt, err := ConnDB().Prepare(Sql)
 	if err != nil {
-		return false, err
+		return 1, err
 	}
 	// exec sql
 	_, err = stmt.Exec(2, time.Now().Format(util.TimeFormat), id)
 	if err != nil {
-		return false, err
+		return 1, err
 	}
-	return true, nil
+	return 0, nil
 }
 // Find All User, Return Role List
 func FindAllRole(where string, query ...interface{}) ([]interface{}, error) {
@@ -107,6 +106,27 @@ func FindAllRole(where string, query ...interface{}) ([]interface{}, error) {
 		}
 	}
 	return result, nil
+}
+// Get user list by role id
+func GetUserByRoleId(roleId int) ([]interface{}, error) {
+	type List struct {
+		Id   int    `json:"id"`
+		Name string `json:"name"`
+	}
+	var userList = make([]interface{}, 0)
+	res, err := ConnDB().Query(selectUserByRole, roleId)
+	if err != nil {
+		return nil, err
+	}
+	// Next
+	for res.Next() {
+		var ele = &List{}
+		if err := res.Scan(&ele.Id, &ele.Name); err != nil {
+			return nil, err
+		}
+		userList = append(userList, ele)
+	}
+	return userList, nil
 }
 func test() {
 	fmt.Println("role module")

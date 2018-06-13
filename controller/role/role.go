@@ -1,7 +1,7 @@
 package role
 
 import (
-	"fmt"
+	"strconv"
 	"net/http"
 	"encoding/json"
 
@@ -20,7 +20,6 @@ func CreateRole(c *gin.Context) {
 	var jsonBody role
 	err := c.BindJSON(&jsonBody)
 	if err != nil {
-		fmt.Println(err)
 		util.RespondBadRequest(c)
 		return
 	}
@@ -30,6 +29,26 @@ func CreateRole(c *gin.Context) {
 	}
 	r.Error.Msg = msg
 	c.JSON(http.StatusOK, r)
+}
+// Update role
+func UpdateRole(c *gin.Context) {
+	type role struct {
+		Name   string `json:"name,omitempty"`
+		Remark string `json:"remark,omitempty"`
+	}
+	var jsonBody role
+	err := c.BindJSON(&jsonBody)
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	code, msg := service.UpdateRole(c.Param("id"), jsonBody.Name, jsonBody.Remark)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
+	})
 }
 // Query role list
 func QueryRoleList(c *gin.Context) {
@@ -60,5 +79,40 @@ func QueryRoleList(c *gin.Context) {
 		},
 		"data": res,
 		"total": len(res),
+	})
+}
+// Delete Role
+func DeleteRole(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	code, msg := service.DeleteRole(id)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
+	})
+}
+// Get user on role group
+func GetUserByRole(c *gin.Context) {
+	var code int
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	result, msg := service.GetUserByRole(id)
+	if msg != nil {
+		code = 1
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
+		"data": result, 
 	})
 }

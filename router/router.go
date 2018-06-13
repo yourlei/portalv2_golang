@@ -35,6 +35,12 @@ func Run() {
 	router.GET("/api/v1/roles", role.QueryRoleList)
 	// 创建角色
 	router.POST("/api/v1/roles", role.CreateRole)
+	// 编辑角色
+	router.PATCH("/api/v1/roles/:id", role.UpdateRole)
+	// 删除角色
+	router.DELETE("/api/v1/roles/:id", role.DeleteRole)
+	// 获取角色组下用户
+	router.GET("/api/v1/roles/users/:id", role.GetUserByRole)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")

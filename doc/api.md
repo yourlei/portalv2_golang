@@ -442,6 +442,7 @@ error: {
 
 - 请求方式: get
 - URL: domain/api/v1/roles?query={body}
+- 权限: token + admin
 
 - body参数
 
@@ -476,7 +477,7 @@ error: {
         {
             "id": 1,
             "name": "超级管理员组",
-            "desc": "超级管理员",
+            "remark": "超级管理员",
             "status": 1,
             "created_at": "2017-10-11T17:11:54.000Z",
             "updated_at": "2017-10-11T17:11:54.000Z",
@@ -497,7 +498,7 @@ error: {
 ``` json
 {
 	"name": "开发组",
-	"desc": "开发小组"
+	"remark": "开发小组"
 }
 ```
 
@@ -523,6 +524,7 @@ error: {
 
 - 请求方式: delete
 - URL: domain/api/v1/roles/:id
+- 权限: token + admin
 
 - 返回值
 
@@ -540,13 +542,14 @@ error: {
 
 - 请求方式: patch
 - URL: domain/api/v1/roles/:id
+- 权限: token + admin
 
 - 参数
 
 ``` json
 {
 	"name": "测试组",
-	"desc": "测试小组"
+	"remark": "测试小组"
 }
 ```
 
@@ -588,7 +591,7 @@ error: {
 ### 3.5 转移角色组下用户
 
 - 请求方式: patch
-- URL: domain/api/v1/rolesmv/users
+- URL: domain/api/v1/roles/users
 
 - 参数
 
