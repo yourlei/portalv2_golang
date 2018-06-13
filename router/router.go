@@ -41,6 +41,8 @@ func Run() {
 	router.DELETE("/api/v1/roles/:id", role.DeleteRole)
 	// 获取角色组下用户
 	router.GET("/api/v1/roles/users/:id", role.GetUserByRole)
+	// 迁移用户
+	router.POST("/api/v1/roles/users", role.MigrateUser)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")

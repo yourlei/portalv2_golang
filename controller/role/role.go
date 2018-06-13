@@ -1,6 +1,7 @@
 package role
 
 import (
+	// "fmt"
 	"strconv"
 	"net/http"
 	"encoding/json"
@@ -114,5 +115,31 @@ func GetUserByRole(c *gin.Context) {
 			"msg": msg,
 		},
 		"data": result, 
+	})
+}
+// Migrate user 
+func MigrateUser(c *gin.Context) {
+	type Body struct {
+		RoleId int   `json:"roleId" binding:"required"`
+		UserId []int `json:"userId" binding:"required,min=1"`
+	}
+	var (
+		jsonBody Body
+		code int
+	)
+	err := c.BindJSON(&jsonBody)
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	err = service.MigrateUser(jsonBody.RoleId, jsonBody.UserId)
+	if err != nil {
+		code = 1
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": err,
+		},
 	})
 }

@@ -112,3 +112,7 @@ func DeleteRole(id int) (int, interface{}){
 func GetUserByRole(id int) ([]interface{}, error) {
  return	database.GetUserByRoleId(id)
 }
+// Migrate user to role group
+func MigrateUser(roleId int, uids []int) error {
+	return database.MigrateUser(roleId, uids)
+}

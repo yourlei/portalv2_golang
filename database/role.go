@@ -114,19 +114,36 @@ func GetUserByRoleId(roleId int) ([]interface{}, error) {
 		Name string `json:"name"`
 	}
 	var userList = make([]interface{}, 0)
-	res, err := ConnDB().Query(selectUserByRole, roleId)
+	rows, err := ConnDB().Query(selectUserByRole, roleId)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 	// Next
-	for res.Next() {
+	for rows.Next() {
 		var ele = &List{}
-		if err := res.Scan(&ele.Id, &ele.Name); err != nil {
+		if err := rows.Scan(&ele.Id, &ele.Name); err != nil {
 			return nil, err
 		}
 		userList = append(userList, ele)
 	}
 	return userList, nil
+}
+// Migrate user to role group
+func MigrateUser(roleId int, userId []int) error {
+	Sql := 	`UPDATE portal_user_role SET role_id = ? WHERE user_id = ?`
+	tx, err := ConnDB().Begin()
+	if err != nil {
+		return err
+	}
+	// update role_id
+	for _, ele := range userId {
+		_, err = ConnDB().Exec(Sql, roleId, ele)
+		if err != nil {
+			return err
+		}
+	}
+  return	tx.Commit()
 }
 func test() {
 	fmt.Println("role module")
