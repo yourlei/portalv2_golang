@@ -2,7 +2,9 @@ package model
 import (
 	"time"
 )
-
+/*************************/
+/********角色结构体*********/
+/*************************/
 // Role Object
 type Role struct {
 	Id        int       `json:"id" binding:"min=1"`    //角色ID
@@ -12,6 +14,7 @@ type Role struct {
 	CreatedAt time.Time `json:"created_at"`            //创建时间
 	UpdatedAt time.Time `json:"updated_at"`            //更新时间
 }
+// where 查询参数
 // role where
 type RoleWhere struct {
 	Name      string    `json:"name,omitempty"`

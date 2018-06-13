@@ -1,17 +1,7 @@
 package test
 
 import (
-	"strconv"
 	"testing"
-	"bytes"
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
-	"encoding/base64"
-	"errors"
-	"fmt"
-	"io"
-	"strings"
 )
 
 func TestDes(t *testing.T) {

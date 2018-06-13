@@ -3,10 +3,10 @@ package test
 import (
 	"testing"
 
-	"portal/util"
+	// "portal/util"
 )
 
-// func TestIsNumber(t *testing.T) {
+func TestIsNumber(t *testing.T) {
 // 	list := make([]interface{}, 0)
 // 	list = append(list, "1", 12, 2)
 
@@ -15,4 +15,4 @@ import (
 // 	} else {
 // 		t.Log("success...")
 // 	}
-// }
+}

@@ -18,11 +18,18 @@ type whereBody struct {
 type query struct {
 	where whereBody
 }
-func TestConst(t *testing.T)  {
-	var where = &query{}
-	defaultTime, _ := time.Parse("2006-01-02 15:04:05", "0001-01-01 00:00:00")
-	if where.where.CreatedAt.Gt == defaultTime {
-		fmt.Println("error")
-	}
-	// fmt.Println(where.where.CreatedAt.Gt)
+// func TestConst(t *testing.T)  {
+// 	var where = &query{}
+// 	defaultTime, _ := time.Parse("2006-01-02 15:04:05", "0001-01-01 00:00:00")
+// 	if where.where.CreatedAt.Gt == defaultTime {
+// 		fmt.Println("error")
+// 	}
+// 	// fmt.Println(where.where.CreatedAt.Gt)
+// }
+
+func TestParams(t *testing.T) {
+	var obj []interface{}
+	obj = append(obj, 1, 2, 3)
+
+	fmt.Println(obj...)
 }

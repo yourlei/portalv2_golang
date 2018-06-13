@@ -52,9 +52,8 @@ import (
 
 func TestMigrateUser(t *testing.T) {
 	database.OpenDB("root:scut2018@tcp(192.168.80.243:3306)/portal2?parseTime=true")
-	
-	var idGroup = make([]interface{}, 0)
-	idGroup =  append(idGroup, "dkjfdl")
+	var idGroup = make([]int, 0)
+	idGroup =  append(idGroup, 1)
 	
 	fmt.Println(idGroup)
 	err := database.MigrateUser(1, idGroup)

@@ -2,7 +2,6 @@ package database
 
 import (
 	"time"
-	"fmt"
 	"portal/util"
 	"portal/model"
 )
@@ -23,7 +22,6 @@ func CreateRole(name, remark string) error {
 	if err != nil {
 		return err
 	}
-
 	_, err = tx.Exec(createRole, name, remark, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
 	if err != nil {
 		return err
@@ -86,7 +84,6 @@ func FindAllRole(where string, query ...interface{}) ([]interface{}, error) {
 	rows, err := ConnDB().Query(selectRole + where, query...)
 
 	if err != nil {
-		fmt.Println(err, "one")
 		return nil, err
 	}
 	defer rows.Close()
@@ -143,8 +140,5 @@ func MigrateUser(roleId int, userId []int) error {
 			return err
 		}
 	}
-  return	tx.Commit()
-}
-func test() {
-	fmt.Println("role module")
+  return tx.Commit()
 }
