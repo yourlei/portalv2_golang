@@ -46,7 +46,9 @@ func Run() {
 	// 迁移用户
 	router.POST("/api/v1/roles/users", role.MigrateUser)
 
+	// 新增菜单
 	router.POST("/api/v1/resource/menus", menu.CreateRouter)
+	router.DELETE("/api/v1/resource/menus/:id", menu.DeleteRouter)
 	// 
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000

@@ -1,7 +1,7 @@
 package database
 
 import (
-	"fmt"
+	"errors"
 	"strconv"
 	"encoding/json"
 	"database/sql"
@@ -11,6 +11,12 @@ var createRouter = "INSERT INTO `portal_router`(`name`,`route`,`type`,`parent`,`
 // Create Router
 func CreateRouter(r model.Route) (int, error) {
 	var v []byte
+	// check parent id
+	if r.Parent != -1 {
+		if code, _ := FindById(r.Parent, `portal_router`); code == -1 {
+			return 1, errors.New("父级ID不存在")
+		}
+	}
 	tx, err := ConnDB().Begin()
 	if err != nil {
 		return 1, err
@@ -19,9 +25,8 @@ func CreateRouter(r model.Route) (int, error) {
 	if v, err = json.Marshal(r.Schema); err != nil {
 		return 1, err
 	}
-	res, err := tx.Exec(createRouter, r.Name, r.Route, r.Type, r.Parent, r.Priority, r.Schema, string(v))
+	res, err := tx.Exec(createRouter, r.Name, r.Route, r.Type, r.Parent, r.Priority, string(v), r.Remark)
 	if err != nil {
-		fmt.Println(err)
 		return 1, err
 	}
 	tx.Commit()
