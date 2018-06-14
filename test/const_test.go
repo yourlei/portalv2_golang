@@ -31,5 +31,8 @@ func TestParams(t *testing.T) {
 	var obj []interface{}
 	obj = append(obj, 1, 2, 3)
 
-	fmt.Println(obj...)
+	var i64 int64 = 3222222222222222222	
+
+	var i int = int(i64)
+	fmt.Println(i64, i)
 }

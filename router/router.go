@@ -5,6 +5,7 @@ import (
 	"portal/controller/captcha"
 	"portal/controller/user"
 	"portal/controller/role"
+	"portal/controller/menu"
 	"portal/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +32,7 @@ func Run() {
 	router.PATCH("/api/v1/users/edit/:id", user.EditUser)
 	// 更新密码
 	router.PATCH("/api/v1/users/password/:id", middleware.SigninRequired, user.ChangePasswd)
+	
 	// 角色列表
 	router.GET("/api/v1/roles", role.QueryRoleList)
 	// 创建角色
@@ -43,6 +45,9 @@ func Run() {
 	router.GET("/api/v1/roles/users/:id", role.GetUserByRole)
 	// 迁移用户
 	router.POST("/api/v1/roles/users", role.MigrateUser)
+
+	router.POST("/api/v1/resource/menus", menu.CreateRouter)
+	// 
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")

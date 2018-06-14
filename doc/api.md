@@ -830,7 +830,7 @@ error: {
 |:----:|:---:|:---:|:--- |
 | name | string | 菜单名称 | Y |
 | item | string | 菜单项 (一级菜单必填)| N |
-| parent | nubmer | 父级菜单ID, 值为0表示该菜单为一级菜单 | Y |
+| parent | nubmer | 父级菜单ID, 值为-1表示该菜单为一级菜单 | Y |
 | action | number | 动作类型(0: 显示子菜单, 1: 打开iframe页面, 2: route, 3: 打开search页面) | Y |
 | schema | string | 菜单对应页面的配置 | Y |
 | priority | number | 权重 | Y |
@@ -905,7 +905,6 @@ error: {
             "item": "FinanceNew",
             "params": "",
             "parent": "",
-            "level": 0,
             "action": 0,
             "priority": 7,
             "group": "游客组,研发"
