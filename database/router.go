@@ -1,13 +1,19 @@
 package database
 
 import (
+	"portal/util"
+	"time"
 	"errors"
 	"strconv"
 	"encoding/json"
 	"database/sql"
 	"portal/model"
 )
-var createRouter = "INSERT INTO `portal_router`(`name`,`route`,`type`,`parent`,`priority`,`schema`,`remark`) VALUES(?,?,?,?,?,?,?)"
+// Create Router
+var createRouter = "INSERT INTO `portal_router`(`name`,`route`,`type`,`parent`,`priority`,`schema`,"+
+									 " `remark`, `created_at`, `updated_at`) VALUES(?,?,?,?,?,?,?,?,?)"
+var selectRouter = "SELECT `id`, `name`, `item`, `parent`, `schema`, `priority`, `action`, `created_at`," +
+									 " `updated_at` FROM portal_router WHERE "
 // Create Router
 func CreateRouter(r model.Route) (int, error) {
 	var v []byte
@@ -25,7 +31,8 @@ func CreateRouter(r model.Route) (int, error) {
 	if v, err = json.Marshal(r.Schema); err != nil {
 		return 1, err
 	}
-	res, err := tx.Exec(createRouter, r.Name, r.Route, r.Type, r.Parent, r.Priority, string(v), r.Remark)
+	res, err := tx.Exec(createRouter, r.Name, r.Route, r.Type, r.Parent, r.Priority, 
+		string(v), r.Remark, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
 	if err != nil {
 		return 1, err
 	}
@@ -42,12 +49,12 @@ func UniqueRouter(r model.Route) (int, error) {
 		name string
 		values []string
 	)
-	_parent := strconv.Itoa(r.Parent)
 	// Fisrt level menu
 	if r.Parent == -1 {
 		Sql += `(route = ? OR name = ?) AND parent = -1`
 		values = append(values, r.Route, r.Name)
 	} else {
+		_parent := strconv.Itoa(r.Parent)
 		// chidl menu
 		Sql += `(route = ? OR name = ?) AND parent = ?`
 		values = append(values, r.Route, r.Name, _parent)
@@ -67,4 +74,35 @@ func UniqueRouter(r model.Route) (int, error) {
 		return 1, err
 	}
 	return 0, nil
+}
+// Query router list
+// return menu router table row
+func FindAllRouter(where string, query ...interface{}) ([]interface{}, error) {
+	var result = make([]interface{}, 0)
+	rows, err := ConnDB().Query(selectRouter + where, query...)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	// 遍历行, 追加到result slice
+	for rows.Next() {
+		var	data = &model.Route{}
+		if err = rows.Scan(
+			&data.Id,
+			&data.Name,
+			&data.Route,
+			&data.Parent,
+			&data.Schema,
+			&data.Priority,
+			&data.Type,
+			&data.CreatedAt,
+			&data.UpdatedAt,
+		); err != nil {
+			return result, err
+		} else {
+			result = append(result, data)
+		}
+	}
+	return result, nil
 }

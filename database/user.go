@@ -16,7 +16,7 @@ const findOne = "SELECT `id`, `name`, `email`, `mobile`, `status`, `check_status
 // 插入用户ID和角色ID
 const insertUserRole = "INSERT INTO `portal_user_role`(`role_id`, `user_id`) VALUES(?, ?)"
 // 查询用户列表
-const selectUser = "SELECT "                 +
+const selectUser = "SELECT"                 +
 									" `u`.`id`,"              +
 									" `u`.`name`,"            +
 									" `u`.`email`,"           +

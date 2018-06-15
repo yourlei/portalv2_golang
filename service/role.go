@@ -2,7 +2,6 @@ package service
 
 import (
 	"time"
-	"fmt"
 	"portal/util"
 	"portal/model"
 	"portal/database"
@@ -60,15 +59,15 @@ func UpdateRole(id, name, remark string) (int, interface{}) {
 }
 // Query role list
 func GetRoleList(query *model.RoleQueryBody) ([]interface{}, error) {
-	fmt.Println(query)
 	var (
 		where = `status = 1`
 		values []string
 	)
 	// include name 
 	if query.Where.Name != "" {
-		where += ` AND name = ?`
-		values = append(values, query.Where.Name)
+		// where += ` AND name = ?`
+		// values = append(values, query.Where.Name)
+		where += ` AND name LIKE "%` + query.Where.Name + `%"`
 	}
 	// include created_at
 	if query.Where.CreatedAt.Gt != util.DefaultTime {
