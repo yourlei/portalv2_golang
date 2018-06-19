@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"portal/util"
 	"time"
 	"errors"
