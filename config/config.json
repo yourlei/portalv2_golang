@@ -6,7 +6,7 @@
   },
   "mysql": {
     "Username": "root",
-    "Password": "",
+    "Password": "scut2018",
     "Host": "192.168.80.243",     
     "Port": 3306,     
     "Database": "portal2" 

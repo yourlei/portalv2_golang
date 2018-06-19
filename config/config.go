@@ -3,12 +3,12 @@ package config
 import (
 	"os"
 	"fmt"
+	// "path/filepath"
 	// "regexp"
 	// "strings"
 	"io/ioutil"
 	// "unicode/utf8"
 	"encoding/json"
-
 	"portal/util"
 )
 
@@ -36,6 +36,7 @@ var (
 var jsonData map[string]interface{}
 
 func initJSON() {
+	
 	bytes, err := ioutil.ReadFile("./config/config.json")
 	if err != nil {
 		fmt.Println("ReadFile: ", err.Error())
@@ -55,6 +56,7 @@ func initJSON() {
 // init database params
 func initMysql() {
 	util.SetStructByJSON(&MysqlConfig, jsonData["mysql"].(map[string]interface{}))
+	
 	// root:scut2018@tcp(192.168.80.243:3306)/portal2?parseTime=true
 	url := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true", MysqlConfig.Username, MysqlConfig.Password, 
 	MysqlConfig.Host, MysqlConfig.Port,MysqlConfig.Database)

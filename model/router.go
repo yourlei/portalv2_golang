@@ -24,6 +24,8 @@ type RouteWhere struct {
 	CreatedAt DateRang `json:"created_at,omitempty"`
 	UpdatedAt DateRang `json:"updated_at,omitempty"`
 }
+// 菜单列表查询体参数
+// Search menu list by condtion
 type RouteQueryBody struct {
 	QueryParams
 	Where RouteWhere `json:"where"`
