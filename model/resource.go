@@ -4,6 +4,6 @@ package model
 type Resource struct {
 	Id      int 
 	AppId   string //应用id
-	resType int   //资源类型
-	resId   int  //资源id
+	ResType int   //资源类型
+	ResId   int  //资源id
 }

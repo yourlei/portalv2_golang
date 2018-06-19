@@ -55,8 +55,10 @@ func Run() {
 	// Menu module
 	// 新增菜单
 	router.POST("/api/v1/resource/menus", menu.CreateRouter)
+	// 删除菜单
 	router.DELETE("/api/v1/resource/menus/:id", menu.DeleteRouter)
-	// 
+	// 菜单列表
+	router.GET("/api/v1/resource/menus", menu.GetRouterList)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")
