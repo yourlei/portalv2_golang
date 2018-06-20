@@ -120,3 +120,19 @@ func FindAllRouter(where string, query ...interface{}) ([]interface{}, error) {
 	}
 	return result, nil
 }
+// Check child menu appid equal parent appid
+func EqualAppid(parentId int, appid string) (bool, error) {
+	var (
+		appId string
+		Sql = `SELECT app_id FROM portal_resource WHERE resource_id = ?`
+	)
+	err := ConnDB().QueryRow(Sql, parentId).Scan(&appId)
+	// not found or error
+	if err != nil {
+		return false, err
+	}
+	if appid != appId {
+		return false, nil
+	}
+	return true, nil
+}

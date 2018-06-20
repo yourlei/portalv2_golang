@@ -13,6 +13,13 @@ func CreateRouter(r model.Route) (int, interface{}) {
 	if code == 0 {
 		return 30001, "名称或地址已占用"
 	}
+	// check appid if parent not equal -1
+	if r.Parent != -1 {
+		equal, _ := database.EqualAppid(r.Parent, r.AppId)
+		if !equal {
+			return 30002, "所属应用与父菜单不一致"
+		}
+	}
 	rowId, err := database.CreateRouter(r)
 	if err != nil {
 		return 1, err

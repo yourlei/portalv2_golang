@@ -8,7 +8,7 @@ import (
 /*************************/
 type Route struct {
 	Id        int       `json:"id"`                              //ID
-	AppId     string    `json:"appid"`                           //所属应用
+	AppId     string    `json:"appid" binding:"required,max=32"`                           //所属应用
 	Name      string    `json:"name" binding:"required,min=1"`   //名称
 	Route     string     `json:"item" binding:"required"`        //路由地址
 	Type      int       `json:"action" binding:"required,min=1"` //路由类型
