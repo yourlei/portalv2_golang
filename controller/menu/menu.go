@@ -66,7 +66,7 @@ func DeleteRouter(c *gin.Context) {
 		util.RespondBadRequest(c)
 		return
 	}
-	code, msg := service.DeleteRoute(id)
+	code, msg := service.DeleteRouter(id)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{

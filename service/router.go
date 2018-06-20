@@ -75,6 +75,6 @@ func GetRouterList(query *model.RouteQueryBody) ([]interface{}, error) {
 	return res, nil
 }
 // Delete Route By id
-func DeleteRoute(id int) (int, interface{}) {
+func DeleteRouter(id int) (int, interface{}) {
 	return database.SetDeletedAt(id, `portal_router`)
 }

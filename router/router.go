@@ -7,6 +7,7 @@ import (
 	"portal/controller/role"
 	"portal/controller/app"
 	"portal/controller/menu"
+	"portal/controller/resource"
 	"portal/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -59,6 +60,8 @@ func Run() {
 	router.DELETE("/api/v1/resource/menus/:id", menu.DeleteRouter)
 	// 菜单列表
 	router.GET("/api/v1/resource/menus", menu.GetRouterList)
+	// Resource module
+	router.GET("/api/v1/resources", resource.GetResource)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")
