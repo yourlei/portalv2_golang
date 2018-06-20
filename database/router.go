@@ -1,12 +1,12 @@
 package database
 
 import (
-	"portal/util"
 	"time"
 	"errors"
 	"strconv"
 	"encoding/json"
 	"database/sql"
+	"portal/util"
 	"portal/model"
 )
 // Create Router

@@ -7,6 +7,7 @@ import (
 	"portal/controller/role"
 	"portal/controller/app"
 	"portal/controller/menu"
+	"portal/controller/inter"
 	"portal/controller/resource"
 	"portal/middleware"
 
@@ -60,6 +61,9 @@ func Run() {
 	router.DELETE("/api/v1/resource/menus/:id", menu.DeleteRouter)
 	// 菜单列表
 	router.GET("/api/v1/resource/menus", menu.GetRouterList)
+	// Interface module
+	// 创建接口
+	router.POST("/api/v1/resource/interfaces", inter.CreateInterface)
 	// Resource module
 	router.GET("/api/v1/resources", resource.GetResource)
 	// router.GET("/api/v1/test", controller.Test)
