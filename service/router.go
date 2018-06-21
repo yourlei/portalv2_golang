@@ -32,6 +32,10 @@ func CreateRouter(r model.Route) (int, interface{}) {
 	}
 	return 0, nil
 }
+// Update menu
+func UpdateRouter(id int, r model.RouteUpdate) (int, interface{}) {
+	return database.UpdateRouter(id, r)
+}
 // Query menu router list
 func GetRouterList(query *model.RouteQueryBody) ([]interface{}, error) {
 	var (
@@ -40,8 +44,6 @@ func GetRouterList(query *model.RouteQueryBody) ([]interface{}, error) {
 	)
 	// include name 
 	if query.Where.Name != "" {
-		// where += ` AND name = ?`
-		// values = append(values, query.Where.Name)
 		where += ` AND name LIKE "%` + query.Where.Name + `%"`
 	}
 	// include created_at
@@ -77,4 +79,8 @@ func GetRouterList(query *model.RouteQueryBody) ([]interface{}, error) {
 // Delete Route By id
 func DeleteRouter(id int) (int, interface{}) {
 	return database.SetDeletedAt(id, `portal_router`)
+}
+// Get Parent route
+func GetParentRoute() ([]interface{}, error) {
+	return database.FindParentRouter()
 }

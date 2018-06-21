@@ -1,6 +1,7 @@
 package menu
 // Menu router
 import (
+	"fmt"
 	"strconv"
 	"net/http"
 	"encoding/json"
@@ -59,6 +60,27 @@ func GetRouterList(c *gin.Context) {
 		"total": len(res),
 	})
 }
+// Update Router
+func UpdateRouter(c *gin.Context) {
+	var jsonBody model.RouteUpdate
+	if err := c.BindJSON(&jsonBody); err != nil {
+		fmt.Println(err)
+		util.RespondBadRequest(c)
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	code, msg := service.UpdateRouter(id, jsonBody)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
+	})
+}
 // Delete Router
 func DeleteRouter(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -72,5 +94,20 @@ func DeleteRouter(c *gin.Context) {
 		"error": gin.H{
 			"msg": msg,
 		},
+	})
+}
+// Get parent route list
+func GetParentRouter(c *gin.Context) {
+	var code int
+	data, msg := service.GetParentRoute()
+	if msg != nil {
+		code = 1
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
+		"data": data,
 	})
 }

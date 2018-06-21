@@ -797,31 +797,13 @@ error: {
 
 ``` json
 {
-  "name": "数仓dfgfd",
+  "name": "你的名字",
 	"item": "data",
 	"parent": 1,
 	"action": 1,
+  "appid": "应用id",
   "priority": 3,
-  "schema": {
-    "params": "http://baidu.com",
-    "formComponet": [
-      {
-        "name": "time", # 表单域名称
-        "label": "时段", # 表单域标签
-        "input": "select", # date | select
-        "values": ["深圳", "广州", "香港"], # input 为date时, values 为空[]
-        "size": "large",
-        "rules": [] # 对应前端的表单域验证规则
-      }
-    ],
-    "iframePage":[
-      {
-        "url":{},
-        "width": "",
-        "height": ""
-      }
-    ]
-  },
+  "schema": {},
   "remark": ""
 }
 ```
@@ -831,6 +813,7 @@ error: {
 | name | string | 菜单名称 | Y |
 | item | string | 菜单项 (一级菜单必填)| N |
 | parent | nubmer | 父级菜单ID, 值为-1表示该菜单为一级菜单 | Y |
+| appid | string | 所在应用id | Y |
 | action | number | 动作类型(1: 显示子菜单, 2: 打开iframe页面, 3: route, 4: 打开search页面) | Y |
 | schema | string | 菜单对应页面的配置 | Y |
 | priority | number | 权重 | Y |
@@ -898,17 +881,17 @@ error: {
   },
   "data": [
     {
-            "created_at": "2018-02-26 13:54:42",
-            "updated_at": "2018-02-26 13:54:42",
-            "id": 4,
-            "name": "国际",
-            "item": "FinanceNew",
-            "params": "",
-            "parent": "",
-            "action": 0,
-            "priority": 7,
-            "group": "游客组,研发"
-        },
+        "created_at": "2018-02-26 13:54:42",
+        "updated_at": "2018-02-26 13:54:42",
+        "id": 4,
+        "name": "国际",
+        "item": "FinanceNew",
+        "params": "",
+        "parent": "",
+        "action": 0,
+        "priority": 7,
+        "group": "游客组,研发"
+    },
   ]
 }
 ```
@@ -923,8 +906,7 @@ error: {
 ``` json
 {
   "name": "",
-  "level": 0,
-  "params": "",
+  "schema": "",
   "remark": "",
   "priority": 9
 }
@@ -1003,20 +985,20 @@ error: {
 
 ``` json
 {
-  "name": "注册f",
-	"url": "/api/v1/users/signup",
-	"method": "post",
-	"module": "user",
-  "remark": ""
+	"name": "用户注册",
+	"group": "User",
+	"route": "/api/v1/user/siginup",
+	"schema": {},
+	"remark": "用户注册测试"
 }
 ```
 
 | 字段 | 类型 | 说明 |是否必填 |
 |:----:|:---:|:---:|:--- |
 | name | string | 接口名称 | Y |
-| url | string | 接口地址 | Y |
-| method | string | 方法 | Y |
-| module | string | 模块 | Y |
+| group | string | 所属模块 | Y |
+| route | string | 接口地址 | Y |
+| schema | object | 配置 | N |
 | remark | string | 描述 | N |
 
 - 返回值

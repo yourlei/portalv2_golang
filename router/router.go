@@ -57,10 +57,14 @@ func Run() {
 	// Menu module
 	// 新增菜单
 	router.POST("/api/v1/resource/menus", menu.CreateRouter)
+	// 更新菜单
+	router.PATCH("/api/v1/resource/menus/:id", menu.UpdateRouter)
 	// 删除菜单
 	router.DELETE("/api/v1/resource/menus/:id", menu.DeleteRouter)
 	// 菜单列表
 	router.GET("/api/v1/resource/menus", menu.GetRouterList)
+	// 父级菜单列表
+	router.GET("/api/v1/resource/menus/parent", menu.GetParentRouter)
 	// Interface module
 	// 创建接口
 	router.POST("/api/v1/resource/interfaces", inter.CreateInterface)

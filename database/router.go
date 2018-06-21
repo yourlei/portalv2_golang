@@ -1,6 +1,7 @@
 package database
 
 import (
+	"strings"
 	"time"
 	"errors"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 // Create Router
 var createRouter = "INSERT INTO `portal_router`(`name`,`route`,`type`,`parent`,`priority`,`schema`,"+
 									 " `remark`, `created_at`, `updated_at`) VALUES(?,?,?,?,?,?,?,?,?)"
+// Select route list									 
 var selectRouter = "SELECT `id`, `name`, `route`, `parent`, `schema`, `priority`, `type`, `created_at`," +
 									 " `updated_at` FROM portal_router WHERE "
 // Create Router
@@ -78,19 +80,6 @@ func UniqueRouter(r model.Route) (int, error) {
 // Query router list
 // return menu router table row
 func FindAllRouter(where string, query ...interface{}) ([]interface{}, error) {
-	type router struct {
-	Id        int       `json:"id"`                              //ID
-	AppId     string    `json:"appid"`                           //所属应用
-	Name      string    `json:"name"`                            //名称
-	Route     string    `json:"item"`                            //路由地址
-	Type      int       `json:"action"`                          //路由类型
-	Parent    int       `json:"parent"`                          //父级id
-	Priority  int       `json:"priority"`                        //权重
-	Schema    string    `json:"schema"`                          //参数配置
-	Remark    string    `json:"remark"`                          //描述
-	CreatedAt time.Time `json:"created_at"`                      //创建时间
-	UpdatedAt time.Time `json:"updated_at"`                      //更新时间
-}
 	var result = make([]interface{}, 0)
 	rows, err := ConnDB().Query(selectRouter + where, query...)
 
@@ -100,14 +89,13 @@ func FindAllRouter(where string, query ...interface{}) ([]interface{}, error) {
 	defer rows.Close()
 	// 遍历行, 追加到result slice
 	for rows.Next() {
-		// var	data = &model.Route{}
-		var	data = &router{}
+		var	data = &model.Route{}
 		if err = rows.Scan(
 			&data.Id,
 			&data.Name,
 			&data.Route,
 			&data.Parent,
-			&data.Schema,
+			&data.SchemaTo,
 			&data.Priority,
 			&data.Type,
 			&data.CreatedAt,
@@ -135,4 +123,81 @@ func EqualAppid(parentId int, appid string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+// Search all parent menu
+func FindParentRouter() ([]interface{}, error) {
+	type List struct {
+		Id   int    `json:"id"`
+		Name string `json:"name"`
+	}
+	var result = make([]interface{}, 0)
+	Sql := "SELECT `id`, `name` FROM portal_router WHERE parent = -1 AND deleted_at = '0000-01-01 00:00:00'"
+	rows, err := ConnDB().Query(Sql)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	// parse
+	for rows.Next() {
+		var ele = List{}
+		if err := rows.Scan(
+			&ele.Id,
+			&ele.Name,
+		); err != nil {
+			return result, err
+		} else {
+			result = append(result, ele)
+		}
+	}
+	return result, nil
+}
+// Update menu router
+func UpdateRouter(id int, r model.RouteUpdate) (int, interface{}) {
+	var (
+		name string
+		where []string
+		Sql = "SELECT name FROM portal_router WHERE id != ?"
+	)
+	// check name or route
+	if r.Name != "" || r.Route != "" {
+		Sql += " AND (name = '" + r.Name + "' OR route = '" + r.Route + "')" + " AND parent = " + 	strconv.Itoa(r.Parent)
+	  err := ConnDB().QueryRow(Sql, id).Scan(&name)
+		// IF error
+		if err != nil && err != sql.ErrNoRows  {
+			return -1, err
+		}
+	}
+	if name != "" {
+		return 1, "名称或地址已占用"
+	}
+	// update
+	if r.Name != "" {
+		sql := " `name` = '" + r.Name + "'"
+		where = append(where, sql)
+	}
+	if r.Route != "" {
+		sql := " `route` = '" + r.Route + "'"
+		where = append(where, sql)
+	}
+	if r.Priority != 0 {
+		sql := " `priority` = '" + strconv.Itoa(r.Priority) + "'"
+		where = append(where, sql)
+	}
+	if r.Schema != nil {
+		schema, err := json.Marshal(r.Schema)
+		if err != nil {
+			return 1, err
+		}
+		sql := " `schema` = '" + string(schema) + "'"
+		where = append(where, sql)
+	}
+	// Have update field
+	if len(where) > 0 {
+		updateSql := "UPDATE portal_router SET " + strings.Join(where, ",")
+		_, err = ConnDB().Exec(updateSql + " WHERE id = ?", strconv.Itoa(id))
+		if err != nil {
+			return 1, err
+		}
+	}
+	return 0, nil
 }
