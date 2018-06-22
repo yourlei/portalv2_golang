@@ -7,9 +7,9 @@ var menuSql = "SELECT" +
 								" r1.id AS DetailId," +
 								" r1.name,"        +
 								" r1.parent,"      +
-							  " '' AS `group`,"   +
+							  " '' AS `group`,"  +
 								" r2.type,"        +
-								" r2.id AS RESID" +
+								" r2.id AS RESID"  +
 							" FROM" +
 								" portal_router AS r1" +
 								" JOIN portal_resource AS r2 ON r1.id = r2.resource_id"

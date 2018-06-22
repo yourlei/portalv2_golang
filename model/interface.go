@@ -4,7 +4,8 @@ import (
 	"time"
 )
 type Interface struct {
-	Id        int         `json:"id"`                              //ID
+	Id        int         `json:"id"` //ID         
+	AppId     string      `json:"appid" binding:"required,max=32"` //所属应用                    
 	Name      string      `json:"name" binding:"required,min=1"`   //名称
 	Group     string      `json:"group" binding:"required"`        //所属模块
 	Route     string      `json:"route" binding:"required,min=1"`  //地址

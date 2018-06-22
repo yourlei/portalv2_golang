@@ -17,7 +17,7 @@ func CreateInterface(Inter model.Interface) (int, interface{}) {
 		return 1, err
 	}
 	// add record to resource table
-	resource := model.Resource{ResType: 2, ResId: rowId}
+	resource := model.Resource{ResType: 2, AppId: Inter.AppId, ResId: rowId}
 	err = database.InsertRes(resource)
 	if err != nil {
 		return 1, err

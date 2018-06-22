@@ -1,19 +1,22 @@
 package service
 
 import (
-	"fmt"
 	"portal/model"
 	"portal/database"
 )
 // Return menu and resource info
 func GetResource() (interface{}, error) {
+	// Return Data format
+	type Data struct {
+		Menus []interface{} `json:"menus"`
+		Interfaces []model.ResCollection `json:"interface"`
+	}
 	var (
 		parentGroup []model.ResCollection
-		result []interface{}
+	  menuList []interface{}
 	)
 	MixResource, err := database.FindAllResource()
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	menu := MixResource.Menu
@@ -33,14 +36,9 @@ func GetResource() (interface{}, error) {
 				group = append(group, ele)
 			}
 		}
-		result = append(result, group)
+		menuList = append(menuList, group)
 	}
-	type Data struct {
-		Menus []interface{} `json:"menus"`
-		Interfaces []model.ResCollection `json:"interface"`
-	}
-	// fmt.Println(result, )
-	var res = Data{Menus: result, Interfaces: MixResource.Inter}
+	var res = Data{Menus: menuList, Interfaces: MixResource.Inter}
 	// return result, nil
 	return res, nil
 }

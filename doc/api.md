@@ -754,17 +754,18 @@ error: {
 #### 4.3 修改权限
 
 - method: post
-- url: domain/api/v1/roles/role2resource
+- ~~url: domain/api/v1/roles/role2resource~~
+- url: domain/api/v1/roles/permission
 
 ``` json
 {
 	"id": 1,
 	"menus": {
-		"associate": [4, 5], # 分配权限的菜单id
+		"associate":  [4, 5], # 分配权限的菜单id
 		"dissociate": [1, 2] # 移除权限的菜单id
 	},
 	"interfaces": {
-		"associate": ["登录"], # 分配权限的接口名称
+		"associate":  ["登录"], # 分配权限的接口名称
 		"dissociate": ["删除用户"] # 移除权限的接口名称
 	}
 }

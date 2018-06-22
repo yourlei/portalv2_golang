@@ -8,6 +8,7 @@ import (
 	"portal/controller/app"
 	"portal/controller/menu"
 	"portal/controller/inter"
+	"portal/controller/grant"
 	"portal/controller/resource"
 	"portal/middleware"
 
@@ -70,6 +71,8 @@ func Run() {
 	router.POST("/api/v1/resource/interfaces", inter.CreateInterface)
 	// Resource module
 	router.GET("/api/v1/resources", resource.GetResource)
+	// 绑定角色与资源
+	router.POST("/api/v1/roles/permission", grant.Grant)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")
