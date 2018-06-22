@@ -663,9 +663,64 @@ error: {
 }
 ```
 
+##### 返回结果更新:
+
+``` json
+{
+    "code": 0,
+    "error": {
+        "msg": null
+    },
+    "data": {
+        "menus": [
+          [
+            {
+                "name": "深圳行",
+                "id": 3,
+                "group": ""
+            },
+            {
+                "name": "深圳行_杨梅坑",
+                "id": 4,
+                "group": ""
+            },
+            {
+                "name": "深圳行_桔钓沙",
+                "id": 5,
+                "group": ""
+            },
+            {
+                "name": "测试_更新接口",
+                "id": 6,
+                "group": ""
+            }
+          ]
+        ],
+        "interface": [
+          {
+              "name": "用户登录",
+              "id": 7,
+              "group": "用户管理"
+          },
+          {
+              "name": "用户注册",
+              "id": 8,
+              "group": "用户管理"
+          },
+          {
+              "name": "用户组列表",
+              "id": 9,
+              "group": "角色管理"
+          }
+        ]
+    }
+}
+```
+
 - 结果说明:
 
-**menus以父菜单进行分组, 第一个元素为父菜单,其余元素则为该父菜单下的子菜单**
+ - **menus以父菜单进行分组, 第一个元素为父菜单,其余元素则为该父菜单下的子菜单**
+ - **interface**通过*group*字段区分模块信息
 
 #### 4.2 获取角色组下资源
 
@@ -898,7 +953,7 @@ error: {
 
 #### 5.1.3 编辑菜单
 
-- method: put
+- method: patch
 - url: domain/api/v1/resource/menus/:id
 
 - 参数
@@ -917,9 +972,10 @@ error: {
 | 字段 | 类型 | 说明 |是否必填 |
 |:----:|:---:|:---:|:--- |
 | name | string |  | N |
-| level | number |  | Y |
-| params | string |  | N |
-| remark | string |  | N |
+| item | string |  | N |
+| parent | number |  | Y |
+| priority | number |  | N |
+| shcema | object |  | N |
 
 - 返回值
 

@@ -8,10 +8,16 @@ type Resource struct {
 	ResId   int  //资源id
 }
 // 菜单,资源详情
-type Menu2Res struct {
-	RouId    int     `json:"-"`//菜单id
+type ResCollection struct {
+	DetailId int     `json:"-"`//菜单id
 	Name     string  `json:"name"`//菜单名称
 	ResType  int     `json:"-"`//资源类型
 	ParentId int     `json:"-"`//父级id
 	RESId    int     `json:"id"`//关联资源id
+	Group    string  `json:"group"`//所在模块
+}
+// Mix menu and interface resource
+type MixResource struct {
+	Menu  []ResCollection `json:"menus"`
+	Inter []ResCollection `json:"interfaces"`
 }
