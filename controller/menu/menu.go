@@ -18,6 +18,7 @@ func CreateRouter(c *gin.Context) {
 
 	err := c.BindJSON(&jsonBody)
 	if err != nil {
+		fmt.Println(err)
 		util.RespondBadRequest(c)
 		return
 	}

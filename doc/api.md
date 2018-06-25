@@ -675,43 +675,39 @@ error: {
         "menus": [
           [
             {
-                "name": "深圳行",
-                "id": 3,
-                "group": ""
-            },
+                "name": "客运分析",
+                "id": 10,
+                "group": "品途航运系统"
+            }
+          ],
+          [
             {
-                "name": "深圳行_杨梅坑",
-                "id": 4,
-                "group": ""
-            },
+                "name": "收益分析",
+                "id": 11,
+                "group": "品途航运系统"
+            }
+          ],
+          [
             {
-                "name": "深圳行_桔钓沙",
-                "id": 5,
-                "group": ""
-            },
+                "name": "会员分析",
+                "id": 12,
+                "group": "品途航运系统"
+            }
+          ],
+          [
             {
-                "name": "测试_更新接口",
-                "id": 6,
-                "group": ""
+                "name": "新闻资讯",
+                "id": 13,
+                "group": "科技厅数据"
             }
           ]
         ],
         "interface": [
-          {
-              "name": "用户登录",
-              "id": 7,
-              "group": "用户管理"
-          },
-          {
-              "name": "用户注册",
-              "id": 8,
-              "group": "用户管理"
-          },
-          {
-              "name": "用户组列表",
-              "id": 9,
-              "group": "角色管理"
-          }
+            {
+                "name": "用户注册",
+                "id": 14,
+                "group": "品途航运系统"
+            }
         ]
     }
 }
@@ -720,7 +716,7 @@ error: {
 - 结果说明:
 
  - **menus以父菜单进行分组, 第一个元素为父菜单,其余元素则为该父菜单下的子菜单**
- - **interface**通过*group*字段区分模块信息
+ - **group**字段为该资源所属应用
 
 #### 4.2 获取角色组下资源
 
@@ -937,17 +933,19 @@ error: {
   },
   "data": [
     {
-        "created_at": "2018-02-26 13:54:42",
-        "updated_at": "2018-02-26 13:54:42",
-        "id": 4,
-        "name": "国际",
-        "item": "FinanceNew",
-        "params": "",
-        "parent": "",
-        "action": 0,
-        "priority": 7,
-        "group": "游客组,研发"
-    },
+      "id": 17,
+      "appid": "",
+      "name": "收益分析",
+      "item": "profile",
+      "action": 1,
+      "parent": -1,
+      "priority": 4,
+      "schema": null,
+      "_schema": "{\"name\":\"leiyu\"}",
+      "remark": "",
+      "created_at": "2018-06-25T15:20:02Z",
+      "updated_at": "2018-06-25T15:20:02Z"
+    }
   ]
 }
 ```

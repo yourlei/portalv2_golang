@@ -7,7 +7,7 @@ import (
 	"portal/util"
 	"portal/model"
 )
-var createInterface = "INSERT INTO `portal_interface`(`name`, `group`, `route`, `schema`, `remark`, `created_at`, `updated_at`) VALUES(?,?,?,?,?,?,?)"
+var createInterface = "INSERT INTO `portal_interface`(`name`, `route`, `schema`, `remark`, `created_at`, `updated_at`) VALUES(?,?,?,?,?,?)"
 // Create Router
 func CreateInterface(Inter model.Interface) (int, error) {
 	var v []byte
@@ -19,7 +19,7 @@ func CreateInterface(Inter model.Interface) (int, error) {
 	if v, err = json.Marshal(Inter.Schema); err != nil {
 		return 1, err
 	}
-	res, err := tx.Exec(createInterface, Inter.Name, Inter.Group, Inter.Route, string(v), Inter.Remark, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
+	res, err := tx.Exec(createInterface, Inter.Name, Inter.Route, string(v), Inter.Remark, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
 	if err != nil {
 		return 1, err
 	}

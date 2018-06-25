@@ -1,4 +1,4 @@
-package grant
+package permission
 
 import (
 	"net/http"
@@ -7,6 +7,7 @@ import (
 	"portal/service"
 	"github.com/gin-gonic/gin"
 )
+// Grant permission to role
 func Grant(c *gin.Context) {
 	var (
 		code int
@@ -28,3 +29,5 @@ func Grant(c *gin.Context) {
 		},
 	})
 }
+// Get role permission
+
