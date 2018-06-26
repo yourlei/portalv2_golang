@@ -3,7 +3,7 @@ package database
 import (
 	"portal/model"
 )
-// 分配给角色的菜单资源
+// 查看角色的菜单资源
 var roleMenuSql = "SELECT" +
 										" portal_resource.id AS id," +
 										" portal_router.name," +
@@ -14,7 +14,7 @@ var roleMenuSql = "SELECT" +
 										" JOIN portal_router ON portal_resource.resource_id = portal_router.id" + 
 									" WHERE" +
 									" portal_resource.id IN ( SELECT resource_id FROM portal_role_res WHERE role_id = ? ) AND `portal_resource`.`type` = 1"
-// 分配给角色的接口资源
+// 查看角色的接口资源
 var roleInterSql =  "SELECT" +
 											" portal_resource.id AS id," +
 											" portal_interface.name," +
@@ -64,6 +64,7 @@ func GetRolePermmison(roleId int) (*model.ResBelongRole, error) {
 		if err != nil {
 			return nil, err
 		}
+		defer rows.Close()
 		for rows.Next() {
 			var ele = model.ResourceInfo{}
 			if err := rows.Scan(

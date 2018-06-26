@@ -71,13 +71,20 @@ func Run() {
 	// Interface module
 	// 创建接口
 	router.POST("/api/v1/resource/interfaces", inter.CreateInterface)
+	// 接口列表
+	router.GET("/api/v1/resource/interfaces", inter.GetInterfaceList)
+	// 编辑接口
+	router.PATCH("/api/v1/resource/interfaces/:id", inter.UpdateInterface)
+	// 删除接口
+	router.DELETE("/api/v1/resource/interfaces/:id", inter.DeleteInterface)
 	// Resource module
 	router.GET("/api/v1/resources", resource.GetResource)
 	// 绑定角色与资源权限
 	router.POST("/api/v1/roles/permission", permission.Grant)
 	// 查看角色组下权限
 	router.GET("/api/v1/roles/resource/:id", permission.GetRolePermisson)
-	// router.GET("/api/v1/test", controller.Test)
+	// 查看角色组下权限(用户端)
+	// ...
 	// listent 3000
 	router.Run(":3000")
 }

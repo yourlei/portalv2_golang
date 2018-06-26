@@ -3,7 +3,6 @@ package service
 import (
 	"strconv"
 	"time"
-	"fmt"
 
 	"portal/database"
 	"portal/config"
@@ -232,7 +231,6 @@ func EditUser(id int, form model.EditUserForm) (int, interface{}) {
 			}
 		}
 		sql += " WHERE `id` = ?"
-		fmt.Println(sql)
 		// update table
 		err := database.EditUser(id, sql)
 		if err != nil {
@@ -259,8 +257,4 @@ func ChangePasswd(id int, oldPasswd, passwd string) (int, interface{}) {
 		return 1, err
 	}
 	return 0, nil
-}
-
-func Test()  {
-	fmt.Println("yes man")
 }

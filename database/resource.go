@@ -81,3 +81,11 @@ func FindAllResource() (*model.MixResource, error) {
 	result := &model.MixResource{Menu: menu, Inter: inter}
 	return result, nil
 }
+// remove row
+func DelResourceRow(resourceId int) (int, error) {
+	_, err := ConnDB().Exec(`DELETE FROM portal_resource WHERE resource_id = ?`, resourceId)
+	if err != nil {
+		return 1, err
+	}
+	return 0, nil
+}

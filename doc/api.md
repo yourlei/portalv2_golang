@@ -732,17 +732,30 @@ error: {
         "msg": ""
     },
     "data": {
-        "menus": [
-            {
-                "id": 4,
-                "name": "国际"
-            },
-            {
-                "id": 6,
-                "name": "新闻搜索"
-            }
-        ],
-        "interfaces": {}
+      "menus": [
+        {
+            "id": 10,
+            "name": "客运分析",
+            "app": "品途航运系统"
+        },
+        {
+            "id": 11,
+            "name": "收益分析",
+            "app": "品途航运系统"
+        },
+        {
+            "id": 13,
+            "name": "新闻资讯",
+            "app": "科技厅数据"
+        }
+      ],
+      "interfaces": [
+        {
+            "id": 14,
+            "name": "用户注册",
+            "app": "品途航运系统"
+        }
+      ]
     }
 }
 ```
@@ -781,55 +794,8 @@ error: {
       "msg": ""
     },
     "data": {
-        "menus": [
-          {
-                "id": 1,
-                "name": "管理数据",
-                "action": 0,
-                "priority": 8,
-                "parent": 0,
-                "schema": "{\"params\":\"\",\"form\":[],\"iframe\":[]}",
-                "item": "data",
-                "child": [
-                    {
-                        "id": 2,
-                        "name": "订单数据",
-                        "action": 1,
-                        "priority": 8,
-                        "parent": 1,
-                        "schema": "{\"params\":\"http://baidu.com\",\"form\":[],\"iframe\":[]}",
-                        "item": "order"
-                    },
-                    {
-                        "id": 3,
-                        "name": "客流数据",
-                        "action": 1,
-                        "priority": 8,
-                        "parent": 1,
-                        "schema": "{\"params\":\"http://baidu.com\",\"form\":[],\"iframe\":[]}",
-                        "item": "customer"
-                    }
-                ]
-            },
-            {
-                "id": 4,
-                "name": "搜索",
-                "action": 1,
-                "priority": 3,
-                "parent": 0,
-                "schema": "{\"params\":\"http://baidu.com\",\"form\":[],\"iframe\":[]}",
-                "item": "find"
-            }
-        ],
-        "interfaces": [
-          {
-            "created_at": "2018-01-26 14:25:08",
-            "updated_at": "2018-01-26 14:25:08",
-            "id": 2,
-            "name": "登录",
-            "url": "api/v1/users/signin"
-          }
-        ]
+        "menus": [],
+        "interfaces": []
     }
 }
 ```
@@ -1041,7 +1007,7 @@ error: {
 ``` json
 {
 	"name": "用户注册",
-	"group": "User",
+	"appid": "",
 	"route": "/api/v1/user/siginup",
 	"schema": {},
 	"remark": "用户注册测试"
@@ -1051,7 +1017,7 @@ error: {
 | 字段 | 类型 | 说明 |是否必填 |
 |:----:|:---:|:---:|:--- |
 | name | string | 接口名称 | Y |
-| group | string | 所属模块 | Y |
+| appid | string | 所在应用id | Y |
 | route | string | 接口地址 | Y |
 | schema | object | 配置 | N |
 | remark | string | 描述 | N |
@@ -1060,9 +1026,9 @@ error: {
 
 ``` json
 {
-  code: 0,
-  error: {
-    msg: ""
+  "code": 0,
+  "error": {
+    "msg": ""
   }
 }
 ```
@@ -1080,7 +1046,6 @@ error: {
   "limit": 10,
   "where": {
     "name": "",
-    "module": "",
     "created_at": {
       $gt: '2017-02-02',
       $lt: '2017-02-10'
@@ -1101,7 +1066,6 @@ error: {
 | offset | number | 页码 | N |
 | limit | number | 页宽 | N |
 | name | string | 接口名 | N |
-| module | string | 模块 | N |
 | created_at | object | 创建时间 | N |
 
 - 返回值
@@ -1112,7 +1076,18 @@ error: {
   "error": {
     "msg": ""
   },
-  "data": []
+  "data": [
+     {
+        "id": 4,
+        "appid": "品途航运系统",
+        "name": "用户注册",
+        "route": "/api/v2/user/siginup",
+        "schema": null,
+        "remark": "更新测试",
+        "created_at": "2018-06-26T16:32:00Z",
+        "updated_at": "2018-06-25T16:03:01Z"
+    }
+  ]
 }
 ```
 
@@ -1165,7 +1140,6 @@ error: {
   }
 }
 ```
-
 ---
 
 # 6日志管理
