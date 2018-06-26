@@ -20,7 +20,7 @@ var selectInterface = "SELECT" +
 												" portal_interface AS a" +
 												" JOIN portal_resource AS b ON a.id = b.resource_id" +
 												" JOIN portal_app AS c ON b.app_id = c.uuid " +
-											" WHERE a.deleted_at = '0000-01-01 00:00:00'"
+											" WHERE "
 // Create Router
 func CreateInterface(Inter model.Interface) (int, error) {
 	var v []byte

@@ -54,7 +54,7 @@ func UpdateRole(c *gin.Context) {
 // Query role list
 func QueryRoleList(c *gin.Context) {
 	var (
-		queryJson *model.RoleQueryBody
+		queryJson *model.GlobalQueryBody
 		code int = 0
 	)
 	// json string 转为 struct

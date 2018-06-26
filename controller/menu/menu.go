@@ -33,7 +33,7 @@ func CreateRouter(c *gin.Context) {
 // Search menu
 func GetRouterList(c *gin.Context) {
 	var (
-		queryJson *model.RouteQueryBody
+		queryJson *model.GlobalQueryBody
 		code int = 0
 	)
 	// json string 转为 struct

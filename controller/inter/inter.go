@@ -31,7 +31,7 @@ func CreateInterface(c *gin.Context) {
 // Get interface list
 func GetInterfaceList(c *gin.Context) {
 	var (
-		queryJson *model.InterQueryBody
+		queryJson *model.GlobalQueryBody
 		code int = 0
 	)
 	// json string 转为 struct

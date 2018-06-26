@@ -3,6 +3,7 @@ package app
 import (
 	"net/http"
 	"encoding/json"
+	"strconv"
 
 	"portal/util"
 	"portal/model"
@@ -32,7 +33,7 @@ func CreateApp(c *gin.Context) {
 // Get List
 func GetAppList(c *gin.Context) {
 	var (
-		queryJson *model.AppQueryBody
+		queryJson *model.GlobalQueryBody
 		code int = 0
 	)
 	// json string 转为 struct
@@ -58,5 +59,28 @@ func GetAppList(c *gin.Context) {
 		},
 		"data": res,
 		"total": len(res),
+	})
+}
+// Update app
+func UpdateApp(c *gin.Context) {
+	type body struct {
+		Name string `json:"name,omitempty"`
+	}
+	var jsonBody body
+	if err := c.BindJSON(&jsonBody); err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	code, msg := service.UpateApp(id, jsonBody.Name)
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
 	})
 }

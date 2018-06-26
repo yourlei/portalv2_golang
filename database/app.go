@@ -54,3 +54,12 @@ func FindAllApp(where string, query ...interface{}) ([]interface{}, error) {
 	}
 	return result, nil
 }
+// Edit app
+func UpdateApp(id int, name string) (int, error) {
+	Sql := `UPDATE portal_app SET name = ?, updated_at = ? WHERE id = ?`
+	_, err := ConnDB().Exec(Sql, name, time.Now().Format(util.TimeFormat), id)
+	if err != nil {
+		return 1, err
+	}
+	return 0, nil
+}

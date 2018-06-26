@@ -54,7 +54,7 @@ func Run() {
 	// 创建app
 	router.POST("/api/v1/app", app.CreateApp)
 	// 编辑app
-	// ....
+	router.PATCH("/api/v1/app/:id", app.UpdateApp)
 	// 应用列表
 	router.GET("/api/v1/app", app.GetAppList)
 	// Menu module
