@@ -1,6 +1,7 @@
 package permission
 
 import (
+	"strconv"
 	"net/http"
 	"portal/util"
 	"portal/model"
@@ -30,4 +31,23 @@ func Grant(c *gin.Context) {
 	})
 }
 // Get role permission
-
+// 查看角色组已分配的权限
+func GetRolePermisson(c *gin.Context) {
+	var code = 0
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		util.RespondBadRequest(c)
+		return
+	}
+	res, err := service.GetRolePermisson(id)
+	if err != nil {
+		code = 1
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": err,
+		},
+		"data": res,
+	})
+}

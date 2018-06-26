@@ -53,6 +53,8 @@ func Run() {
 	// App module
 	// 创建app
 	router.POST("/api/v1/app", app.CreateApp)
+	// 编辑app
+	// ....
 	// 应用列表
 	router.GET("/api/v1/app", app.GetAppList)
 	// Menu module
@@ -71,8 +73,10 @@ func Run() {
 	router.POST("/api/v1/resource/interfaces", inter.CreateInterface)
 	// Resource module
 	router.GET("/api/v1/resources", resource.GetResource)
-	// 绑定角色与资源
+	// 绑定角色与资源权限
 	router.POST("/api/v1/roles/permission", permission.Grant)
+	// 查看角色组下权限
+	router.GET("/api/v1/roles/resource/:id", permission.GetRolePermisson)
 	// router.GET("/api/v1/test", controller.Test)
 	// listent 3000
 	router.Run(":3000")

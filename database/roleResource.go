@@ -4,27 +4,27 @@ import (
 	"portal/model"
 )
 // 分配给角色的菜单资源
-var roleMenuSql = `SELECT` +
-										` portal_resource.id AS id,` +
-										` portal_router.name,` +
-										` portal_app.name  AS app` +
-									`FROM` +
-										` portal_resource` +
-										` JOIN portal_app on portal_resource.app_id = portal_app.uuid` + 
-										` JOIN portal_router ON portal_resource.resource_id = portal_router.id` + 
-									` WHERE` +
-									` portal_resource.id IN ( SELECT resource_id FROM portal_role_res WHERE role_id = 1 ) AND portal_resource.type = 1`
+var roleMenuSql = "SELECT" +
+										" portal_resource.id AS id," +
+										" portal_router.name," +
+										" portal_app.name  AS app" +
+									" FROM" +
+										" portal_resource" +
+										" JOIN portal_app ON portal_resource.`app_id` = portal_app.`uuid`" + 
+										" JOIN portal_router ON portal_resource.resource_id = portal_router.id" + 
+									" WHERE" +
+									" portal_resource.id IN ( SELECT resource_id FROM portal_role_res WHERE role_id = ? ) AND `portal_resource`.`type` = 1"
 // 分配给角色的接口资源
-var roleInterSql =  `SELECT` +
-											` portal_resource.id AS id,` +
-											` portal_interface.name,` +
-											` portal_app.name  AS app` +
-										`FROM` +
-											` portal_resource` +
-											` JOIN portal_app on portal_resource.app_id = portal_app.uuid` + 
-											` JOIN portal_interface ON portal_resource.resource_id = portal_interface.id` + 
-										` WHERE` +
-										` portal_resource.id IN ( SELECT resource_id FROM portal_role_res WHERE role_id = 1 ) AND portal_resource.type = 2`
+var roleInterSql =  "SELECT" +
+											" portal_resource.id AS id," +
+											" portal_interface.name," +
+											" portal_app.name  AS app" +
+										" FROM" +
+											" portal_resource" +
+											" JOIN portal_app on portal_resource.`app_id` = portal_app.`uuid`" + 
+											" JOIN portal_interface ON portal_resource.resource_id = portal_interface.id" + 
+										" WHERE" +
+										" portal_resource.id IN ( SELECT resource_id FROM portal_role_res WHERE role_id = ? ) AND portal_resource.`type` = 2"
 // 权限分配
 func BindRoleRes(arg model.RolePrivilege) error {
 	insertSql := "INSERT INTO portal_role_res(role_id, resource_id) VALUES(?, ?)"
@@ -42,6 +42,7 @@ func BindRoleRes(arg model.RolePrivilege) error {
 		} else {
 			d = arg.Disable
 		}
+		// 每个menu | interface执行sql
 		for _, v := range d {
 			_, err := tx.Exec(sqlList[i], arg.Id, v)
 			if err != nil {
