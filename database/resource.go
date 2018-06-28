@@ -18,7 +18,6 @@ var interfaceSql = "SELECT" +
 											" r1.id AS DetailId," + 
 											" r1.name,"           +
 											" -1 AS `parent`,"    +
-											// " r1.`group`,"        +
 											" r3.app AS `group`," +
 										  " r2.type,"           +
 											" r2.id AS RESID"     +

@@ -1,3 +1,5 @@
+// Role and resource
+// 提供角色与资源的权限操作
 package service
 
 import (

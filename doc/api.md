@@ -899,18 +899,18 @@ error: {
   },
   "data": [
     {
-      "id": 17,
-      "appid": "",
-      "name": "收益分析",
-      "item": "profile",
+      "id": 16,
+      "appid": "品途航运系统", # 所在应用
+      "name": "客运分析",
+      "item": "customer",
       "action": 1,
       "parent": -1,
       "priority": 4,
       "schema": null,
-      "_schema": "{\"name\":\"leiyu\"}",
+      "_schema": "null",
       "remark": "",
-      "created_at": "2018-06-25T15:20:02Z",
-      "updated_at": "2018-06-25T15:20:02Z"
+      "created_at": "2018-06-25T15:12:29Z",
+      "updated_at": "2018-06-25T15:12:29Z"
     }
   ]
 }

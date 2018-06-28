@@ -14,6 +14,7 @@ type DateRang struct {
 	Gt time.Time  `json:"$gt,omitempty" binding:"required"`
 	Lt time.Time  `json:"$lt,omitempty" binding:"required"`
 }
+// query 查询体中where可包含的字段
 type GlobalQueryWhere struct {
 	Name string `json:"name,omitempty"`
 	App string `json:"app,omitempty"`

@@ -1,3 +1,4 @@
+// Resource module
 package service
 
 import (

@@ -13,9 +13,7 @@ import (
 // Create Router
 var createRouter = "INSERT INTO `portal_router`(`name`,`route`,`type`,`parent`,`priority`,`schema`,"+
 									 " `remark`, `created_at`, `updated_at`) VALUES(?,?,?,?,?,?,?,?,?)"
-// Select route list									 
-// var selectRouter = "SELECT `id`, `name`, `route`, `parent`, `schema`, `priority`, `type`, `created_at`," +
-// 									 " `updated_at` FROM portal_router WHERE "
+// Select route list
 var selectRouter =  "SELECT" +
 											" a.id," +
 											" a.name," +

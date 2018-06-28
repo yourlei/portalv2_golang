@@ -10,6 +10,7 @@ import (
 	"portal/controller/inter"
 	"portal/controller/permission"
 	"portal/controller/resource"
+	"portal/controller/openAuth"
 	"portal/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -83,6 +84,8 @@ func Run() {
 	router.POST("/api/v1/roles/permission", permission.Grant)
 	// 查看角色组下权限
 	router.GET("/api/v1/roles/resource/:id", permission.GetRolePermisson)
+	// OpenAuth 外部验证模块
+	router.GET("/api/v1/openauth", openAuth.Auth)
 	// 查看角色组下权限(用户端)
 	// ...
 	// listent 3000

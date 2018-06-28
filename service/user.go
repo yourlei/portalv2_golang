@@ -1,3 +1,4 @@
+// User module
 package service
 
 import (
@@ -78,14 +79,12 @@ func generateToken(userId, roleId string) (string, error) {
 	}
 	return ss, nil
 }
-/**
- * 用户注册
- * @params 
- *   User struct (post body)
- * @return
- *   code int
- *   msg  error
- */
+// 用户注册
+// @params 
+//   User struct (post body)
+// @return
+//   code int
+//   msg  error
 func Signup(User model.SignupForm) (int, interface{})  {
 	// 验证邮箱,手机号是否已注册
 	where := "(`email` = ? OR `mobile` = ?) AND `deleted_at` = ?"
@@ -102,14 +101,12 @@ func Signup(User model.SignupForm) (int, interface{})  {
 	}
 	return 0, nil
 }
-/**
- * 查询用户列表
- * @params
- *   query: struct (query参数)
- * @reutrn 
- *   resutl [] *model.User
- *   msg    error
- */
+// 查询用户列表
+// @params
+//   query: struct (query参数)
+// @reutrn 
+//   resutl [] *model.User
+//   msg    error
 func GetUserList(query model.UserQueryBody) ([]interface{}, error) {
 	var (
 		where string = "`u`.`status` "
@@ -155,13 +152,11 @@ func GetUserList(query model.UserQueryBody) ([]interface{}, error) {
 	}
 	return res, nil
 }
-/**
- * 用户状态变更, status 1:启用,2:禁用,3:注销
- * @params 
- *   id:     用户id
- *   status: 状态值
- *   remark: 操作描述
- */
+// 用户状态变更, status 1:启用,2:禁用,3:注销
+// @params 
+//   id:     用户id
+//   status: 状态值
+//   remark: 操作描述
 func UpdateUserStatus(id int, status int, remark string) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
@@ -173,13 +168,11 @@ func UpdateUserStatus(id int, status int, remark string) (int, interface{}) {
 	}
 	return 0, nil
 }
-/**
- * 审核账户, check_status 1：未审核，2：通过，3：不通过
- * @params 
- *   id:           用户id
- *   check_status: 状态值
- *   check_remark: 描述
- */
+// 审核账户, check_status 1：未审核，2：通过，3：不通过
+// @params 
+//   id:           用户id
+//   check_status: 状态值
+//   check_remark: 描述
 func ReviewUser(id int, check_status int, check_remark string) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"
@@ -191,12 +184,10 @@ func ReviewUser(id int, check_status int, check_remark string) (int, interface{}
 	}
 	return 0, nil
 }
-/**
- * 编辑用户
- * @params
- *   id string
- *   form struct
- */
+// 编辑用户
+// @params
+//   id string
+//   form struct
 func EditUser(id int, form model.EditUserForm) (int, interface{}) {
 	if code, _ := database.FindById(id, `portal_user`); code != 0 {
 		return 1, "未找到该用户"

@@ -27,12 +27,15 @@ type query struct {
 // 	// fmt.Println(where.where.CreatedAt.Gt)
 // }
 
-func TestParams(t *testing.T) {
-	var obj []interface{}
-	obj = append(obj, 1, 2, 3)
+// func TestParams(t *testing.T) {
+// 	var obj []interface{}
+// 	obj = append(obj, 1, 2, 3)
 
-	var i64 int64 = 3222222222222222222	
+// 	var i64 int64 = 3222222222222222222	
 
-	var i int = int(i64)
-	fmt.Println(i64, i)
+// 	var i int = int(i64)
+// 	fmt.Println(i64, i)
+// }
+func TestGetArgs(t *testing.T) {
+	
 }

@@ -1,3 +1,5 @@
+// Interface module
+// 提供与接口资源相关的功能函数
 package service
 
 import (

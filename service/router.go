@@ -1,3 +1,5 @@
+// Router module
+// 菜单资源
 package service
 
 import (

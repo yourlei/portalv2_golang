@@ -1,7 +1,6 @@
-/**
- * package service
- * base64图片验证码
- */
+// package service
+// captch module
+// base64图片验证码
 package service
 import (
 	"time"
