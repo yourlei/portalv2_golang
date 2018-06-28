@@ -16,13 +16,13 @@ type Role struct {
 }
 // where 查询参数
 // role where
-type RoleWhere struct {
-	Name      string    `json:"name,omitempty"`
-	CreatedAt DateRang  `json:"created_at,omitempty"`            //创建时间
-	UpdatedAt DateRang  `json:"updated_at,omitempty"`            //更新时间
-}
-// role query body
-type RoleQueryBody struct {
-	QueryParams
-	Where RoleWhere `json:"where"`
-}
+// type RoleWhere struct {
+// 	Name      string    `json:"name,omitempty"`
+// 	CreatedAt DateRang  `json:"created_at,omitempty"`            //创建时间
+// 	UpdatedAt DateRang  `json:"updated_at,omitempty"`            //更新时间
+// }
+// // role query body
+// type RoleQueryBody struct {
+// 	QueryParams
+// 	Where RoleWhere `json:"where"`
+// }

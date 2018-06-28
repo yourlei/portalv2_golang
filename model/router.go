@@ -21,17 +21,17 @@ type Route struct {
 	UpdatedAt time.Time `json:"updated_at"`                      //更新时间
 }
 // Menu Router query condition
-type RouteWhere struct {
-	Name      string   `json:"name,omitempty"`
-	CreatedAt DateRang `json:"created_at,omitempty"`
-	UpdatedAt DateRang `json:"updated_at,omitempty"`
-}
-// 菜单列表查询体参数
-// Search menu list by condtion
-type RouteQueryBody struct {
-	QueryParams
-	Where RouteWhere `json:"where"`
-}
+// type RouteWhere struct {
+// 	Name      string   `json:"name,omitempty"`
+// 	CreatedAt DateRang `json:"created_at,omitempty"`
+// 	UpdatedAt DateRang `json:"updated_at,omitempty"`
+// }
+// // 菜单列表查询体参数
+// // Search menu list by condtion
+// type RouteQueryBody struct {
+// 	QueryParams
+// 	Where RouteWhere `json:"where"`
+// }
 // 更新menu router
 type RouteUpdate struct {
 	Name     string      `json:"name"`

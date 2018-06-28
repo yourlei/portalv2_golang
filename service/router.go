@@ -38,8 +38,7 @@ func UpdateRouter(id int, r model.RouteUpdate) (int, interface{}) {
 }
 // Query menu router list
 func GetRouterList(query *model.GlobalQueryBody) ([]interface{}, error) {
-	var where = "deleted_at = '" + util.DeletedAt + "'"
-	_sql, params := util.ParseQueryBody(query, where)
+	_sql, params := util.ParseQueryBody(query, true)
 	// Run sql
 	res, err := database.FindAllRouter(_sql, params...)
 	if err != nil {

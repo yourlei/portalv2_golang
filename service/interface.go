@@ -30,8 +30,7 @@ func CreateInterface(Inter model.Interface) (int, interface{}) {
 }
 // Show interface list
 func GetInterfaceList(query *model.GlobalQueryBody) ([]interface{}, error) {
-	var where = "a.deleted_at = '" + util.DeletedAt + "'"
-	_sql, params := util.ParseQueryBody(query, where)
+	_sql, params := util.ParseQueryBody(query, true)
 	// Run sql
 	res, err := database.FindAllInterface(_sql, params...)
 	if err != nil {

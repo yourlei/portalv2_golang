@@ -16,6 +16,7 @@ type DateRang struct {
 }
 type GlobalQueryWhere struct {
 	Name string `json:"name,omitempty"`
+	App string `json:"app,omitempty"`
 	CreatedAt DateRang `json:"created_at,omitempty"`
 	UpdatedAt DateRang `json:"updated_at,omitempty"`
 }

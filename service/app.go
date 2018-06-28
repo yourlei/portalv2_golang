@@ -18,8 +18,7 @@ func CreateApp(name string) (int, interface{}) {
 }
 // Get App list
 func GetAppList(query *model.GlobalQueryBody) ([]interface{}, error) {
-	var where = "deleted_at = '" + util.DeletedAt + "'"
-	_sql, params := util.ParseQueryBody(query, where)
+	_sql, params := util.ParseQueryBody(query, false)
 	res, err := database.FindAllApp(_sql, params...)
 	if err != nil {
 		return nil, err

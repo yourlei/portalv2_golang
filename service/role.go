@@ -59,8 +59,7 @@ func UpdateRole(id, name, remark string) (int, interface{}) {
 }
 // Query role list
 func GetRoleList(query *model.GlobalQueryBody) ([]interface{}, error) {
-	var where = `status = 1`
-	_sql, params := util.ParseQueryBody(query, where)
+	_sql, params := util.ParseQueryBody(query, false)
 	// Run sql
 	res, err := database.FindAllRole(_sql, params...)
 	if err != nil {

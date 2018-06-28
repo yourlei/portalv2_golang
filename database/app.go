@@ -8,9 +8,10 @@ import (
 	"github.com/satori/go.uuid"
 )
 // Create App
-var createApp = `INSERT INTO portal_app(uuid, name, created_at, updated_at) VALUES(?, ?, ?, ?)`
+var createApp = `INSERT INTO portal_app(uuid, app, created_at, updated_at) VALUES(?, ?, ?, ?)`
 // Select row
-var selectApp = `SELECT id, name, uuid, created_at, updated_at FROM portal_app WHERE `
+var selectApp = `SELECT id, app, uuid, created_at, updated_at FROM portal_app WHERE deleted_at = "` +
+                util.DeletedAt + `"`
 // Add app row
 func CreateApp(name string) (int, error) {
 	tx, err := ConnDB().Begin()

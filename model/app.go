@@ -12,12 +12,12 @@ type App struct {
 	UpdatedAt time.Time  //`json:"updated_at"`
 }
 // App query 
-type AppWhere struct {
-	Name string `json:"name,omitempty"`
-	CreatedAt DateRang `json:"created_at,omitempty"`
-	UpdatedAt DateRang `json:"updated_at,omitempty"`
-}
-type AppQueryBody struct {
-	QueryParams
-	Where RouteWhere `json:"where"`
-}
+// type AppWhere struct {
+// 	Name string `json:"name,omitempty"`
+// 	CreatedAt DateRang `json:"created_at,omitempty"`
+// 	UpdatedAt DateRang `json:"updated_at,omitempty"`
+// }
+// type AppQueryBody struct {
+// 	QueryParams
+// 	Where RouteWhere `json:"where"`
+// }

@@ -14,8 +14,24 @@ import (
 var createRouter = "INSERT INTO `portal_router`(`name`,`route`,`type`,`parent`,`priority`,`schema`,"+
 									 " `remark`, `created_at`, `updated_at`) VALUES(?,?,?,?,?,?,?,?,?)"
 // Select route list									 
-var selectRouter = "SELECT `id`, `name`, `route`, `parent`, `schema`, `priority`, `type`, `created_at`," +
-									 " `updated_at` FROM portal_router WHERE "
+// var selectRouter = "SELECT `id`, `name`, `route`, `parent`, `schema`, `priority`, `type`, `created_at`," +
+// 									 " `updated_at` FROM portal_router WHERE "
+var selectRouter =  "SELECT" +
+											" a.id," +
+											" a.name," +
+											" a.route," +
+											" a.parent," +
+											" a.`schema`," +
+											" a.priority," +
+											" a.type," +
+											" a.created_at," +
+											" a.updated_at," +
+											" c.app" +
+										" FROM" +
+											" portal_router a" +
+											" JOIN portal_resource AS b ON a.id = b.resource_id" +
+											" JOIN portal_app AS c ON b.app_id = c.uuid" +
+											" WHERE a.deleted_at = '" + util.DeletedAt + "'"
 // Create Router
 func CreateRouter(r model.Route) (int, error) {
 	var v []byte
@@ -100,6 +116,7 @@ func FindAllRouter(where string, query ...interface{}) ([]interface{}, error) {
 			&data.Type,
 			&data.CreatedAt,
 			&data.UpdatedAt,
+			&data.AppId,
 		); err != nil {
 			return result, err
 		} else {

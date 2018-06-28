@@ -13,14 +13,14 @@ var selectInterface = "SELECT" +
 												" a.`name`," +
 												" a.route,"  +
 												" a.remark," +
-												" c.`name` AS app," +
+												" c.app,"  +
 												" a.created_at," +
 												" a.updated_at" +
 											" FROM" +
 												" portal_interface AS a" +
 												" JOIN portal_resource AS b ON a.id = b.resource_id" +
 												" JOIN portal_app AS c ON b.app_id = c.uuid " +
-											" WHERE "
+											" WHERE a.deleted_at = '" + util.DeletedAt + "'"
 // Create Router
 func CreateInterface(Inter model.Interface) (int, error) {
 	var v []byte

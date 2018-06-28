@@ -7,7 +7,7 @@ import (
 var roleMenuSql = "SELECT" +
 										" portal_resource.id AS id," +
 										" portal_router.name," +
-										" portal_app.name  AS app" +
+										" portal_app.app" +
 									" FROM" +
 										" portal_resource" +
 										" JOIN portal_app ON portal_resource.`app_id` = portal_app.`uuid`" + 
@@ -18,7 +18,7 @@ var roleMenuSql = "SELECT" +
 var roleInterSql =  "SELECT" +
 											" portal_resource.id AS id," +
 											" portal_interface.name," +
-											" portal_app.name  AS app" +
+											" portal_app.app" +
 										" FROM" +
 											" portal_resource" +
 											" JOIN portal_app on portal_resource.`app_id` = portal_app.`uuid`" + 

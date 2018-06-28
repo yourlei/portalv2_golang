@@ -1,21 +1,22 @@
 package database
 
 import (
+	"fmt"
 	"time"
 	"portal/util"
 	"portal/model"
 )
 
 var createRole = `INSERT INTO portal_role(name, remark, created_at, updated_at) VALUES(?, ?, ?, ?)`
-var selectRole = `SELECT id, name, remark, created_at, updated_at FROM portal_role WHERE `
+var selectRole = `SELECT id, name, remark, created_at, updated_at FROM portal_role WHERE status = 1`
 var selectUserByRole = `SELECT`           +              
 												` u.id,`          +
 												` u.name`         +
-										`	FROM`               +
-											`	portal_user AS u` +
-											` WHERE`            +
-												` u.id IN ( SELECT ur.user_id FROM portal_user_role AS ur WHERE ur.role_id = ? )` +
-												` AND status != 3`
+											`	FROM`               +
+												`	portal_user AS u` +
+												` WHERE`            +
+													` u.id IN ( SELECT ur.user_id FROM portal_user_role AS ur WHERE ur.role_id = ? )` +
+													` AND status != 3`
 // Create role
 func CreateRole(name, remark string) error {
 	tx, err := ConnDB().Begin()
@@ -82,7 +83,7 @@ func DeleteRole(id int) (int, error) {
 func FindAllRole(where string, query ...interface{}) ([]interface{}, error) {
 	var result = make([]interface{}, 0)
 	rows, err := ConnDB().Query(selectRole + where, query...)
-
+	fmt.Println(selectRole+where)
 	if err != nil {
 		return nil, err
 	}
