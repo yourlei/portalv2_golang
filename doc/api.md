@@ -1047,12 +1047,12 @@ error: {
   "where": {
     "name": "",
     "created_at": {
-      $gt: '2017-02-02',
-      $lt: '2017-02-10'
+      "$gt": '2017-02-02',
+      "$lt": '2017-02-10'
     },
     "updated_at": {
-      $gt: '',
-      $lt: ''
+      "$gt": '',
+      "$lt": ''
     }
   },
   "fields": []
@@ -1144,7 +1144,7 @@ error: {
 
 # 6日志管理
 
-#### 6.1 日志列表
+### 6.1 日志列表
 
 - 请求方式: get
 - URL: domain/api/v1/logs?query=body
@@ -1207,8 +1207,8 @@ error: {
     "action": "",
     "ip": ,
     "created_at": {
-      $gt: '2017-02-02',
-      $lt: '2017-02-10'
+      "$gt": '2017-02-02',
+      "$lt": '2017-02-10'
     }
   }
 }
@@ -1216,141 +1216,59 @@ error: {
 
 ---
 
-# 7站点配置
+# 7外部应用管理
 
-#### 7.1 编辑配置
-
-- method: put
-- url: domain/api/v1/setting/:id
-
-**id 值为1**
-
-- 参数
-
-``` json
-{
-  "user_title": "用户端标题",
-  "admin_title": "管理员端标题"
-}
-```
-
-- 返回结果
-
-``` json
-{
-  "code": 0,
-  "error": {
-    "msg": ""
-  },
-  "data": {
-    "id": 1,
-    "user_title": "用户端标题",
-    "admin_title": "管理员端标题"
-  }
-}
-```
-
-#### 7.2 获取配置信息
-
-- method: get
-- url: domain/api/v1/setting/:id
-
-**id 值为1,仅保存一条配置信息**
-
-- 返回结果
-
-``` json
-{
-  "code": 0,
-  "error": {
-    "msg": ""
-  },
-  "data": {
-    "id": 1,
-    "user_title": "用户端标题",
-    "admin_title": "管理员端标题"
-  }
-}
-```
-
-#### 7.3 上传logo
+### 7.1 新增应用
 
 - method: post
-- url: domain/api/v1/upload/logo/:name
+- url:    domain/api/v1/app
 
-**name: user(用户端logo/favicon) | admin(管理员端logo/favicon)**
-
-- 参数
-
-**form**
-
-| 字段 | 类型 |
-|:-----:|:----:|
-| input | file |
-
-**文件格式限定为.png**
-
-**图片地址**:
-
-* logo: domain/public/logo/{user|admin}/logo.png
-* favicon: domain/public/logo/{user|admin}/favicon.ico
-
----
-
-### 8　es查询(用户端)
-
-- method: get
-- url: domain/api/v1/es/search?query={body}
-
-- body查询体
+- body 
 
 ``` json
 {
-  "offset":0,
-  "limit": 10,
-  "where": {
-    "index":"qualitrip", 　 # 数据集
-    "key":"天津",  　　　　　 # 搜索参数
-    "name": "菜单名"
+	"name": "惠州电力"  # 应用名称
+}
+```
+
+- return 
+
+``` json
+{
+  "code": 0,
+  "error": {
+    "msg": null
   },
-  "order": ["sum", "desc"] # ["排序字段", "排序规则(asc(升序), desc(降序)"]
+  "uuid": "37316f98e27642d6a2a6538ba5087d0f" # 应用标识
 }
 ```
 
-- 返回结果
+*uuid唯一标识应用, 当应用请求外部权限验证接口时需使用该uuid作为身份标识*
+
+### 7.2 编辑应用
+
+- method: patch
+- url:    domain/api/v1/app
+
+- body 
 
 ``` json
 {
-    "code": 0,
-    "error": {
-        "msg": ""
-    },
-    "total": 2351,
-    "columns": [
-        {
-            "name": "sail_time", # 列名
-            "sorting": true  # 是否可排序
-        },
-        {
-            "name": "city",
-            "sorting": false
-        },
-     ],
-    "data": [
-        {
-            "ticket_id": "113916317954",
-            "order_status": "3",
-            "trace_code": "PY",
-            "sail_time": "2000-01-01T00:00:00.000+0800",
-            "class_of_service": "121",
-            "departure": "HKA",
-            "destination": "PY-HKA",
-            "customer_profile": "1",
-            "price": "300",
-            "currency": "RMB"
-        }
-    ]
+  "name": "new name"
 }
 ```
 
-**结果说明: 前端根据columns展示表头**
+- return 
+
+``` json
+{
+  "code": 0,
+  "error": {
+    "msg": null
+  }
+}
+```
+
+
+
+

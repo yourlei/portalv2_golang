@@ -6,15 +6,16 @@ import (
 	"portal/database"
 )
 // Create app
-func CreateApp(name string) (int, interface{}) {
-	code, err := database.FindByName(name, `portal_app`)
+func CreateApp(name string) (int, interface{}, string) {
+	code, _ := database.UniqueAppName(name)
 	if code == 0 {
-		return 1, "该应用已存在"
+		return 1, "该应用已存在", ""
 	}
-	if _, err = database.CreateApp(name); err != nil {
-		return 1, err
+	_, uuid, err := database.CreateApp(name)
+	if err != nil {
+		return 1, err, ""
 	}
-	return 0, nil
+	return 0, nil, uuid
 }
 // Get App list
 func GetAppList(query *model.GlobalQueryBody) ([]interface{}, error) {

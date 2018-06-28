@@ -1,26 +1,27 @@
 package middleware
 
 import (
-	"net/http"
-	"strconv"
 	"fmt"
+	"strconv"
+	"net/http"
 
-	"portal/config"
 	"portal/util"
+	"portal/model"
+	"portal/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
 )
 
 // claims
-type MyClaims struct {
-    UserId string `json:"userId,omitempty"`
-    RoleId string `json:"roleId,omitempty"`
-    jwt.StandardClaims
-}
+// type MyClaims struct {
+//     UserId string `json:"userId,omitempty"`
+//     RoleId string `json:"roleId,omitempty"`
+//     jwt.StandardClaims
+// }
 // Parse token
-func ParseToken(tokenString string) (*MyClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(tokenString string) (*model.MyClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &model.MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.AppConfig.TokenSecrect), nil
 	})
 	// 无效的token
@@ -28,7 +29,7 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 		return nil, err
 	}
 	// validate
-	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
+	if claims, ok := token.Claims.(*model.MyClaims); ok && token.Valid {
 			// fmt.Printf("%v %v", claims.UserId, claims.StandardClaims.ExpiresAt)
 			return claims, nil
 	} else {
@@ -57,7 +58,7 @@ func SigninRequired(c *gin.Context) {
 func AdminRequired(c *gin.Context) {
 	var (
 		token  *http.Cookie
-		claims *MyClaims
+		claims *model.MyClaims
 		err    error
 	)
 	// Get cookie

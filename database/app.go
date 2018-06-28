@@ -3,6 +3,8 @@ package database
 import (
 	"time"
 	"strings"
+	"database/sql"
+
 	"portal/util"
 	"portal/model"
 	"github.com/satori/go.uuid"
@@ -13,11 +15,11 @@ var createApp = `INSERT INTO portal_app(uuid, app, created_at, updated_at) VALUE
 var selectApp = `SELECT id, app, uuid, created_at, updated_at FROM portal_app WHERE deleted_at = "` +
                 util.DeletedAt + `"`
 // Add app row
-func CreateApp(name string) (int, error) {
+func CreateApp(name string) (int, string, error) {
 	tx, err := ConnDB().Begin()
 
 	if err != nil {
-		return 1, err
+		return 1, "", err
 	}
 	// create uuid
 	u1 := uuid.Must(uuid.NewV4())
@@ -25,10 +27,10 @@ func CreateApp(name string) (int, error) {
 	
 	_, err = tx.Exec(createApp, u2, name, time.Now().Format(util.TimeFormat), time.Now().Format(util.TimeFormat))
 	if err != nil {
-		return 1, err
+		return 1, "", err
 	}
 	tx.Commit()
-	return 0, nil
+	return 0, u2, nil
 }
 // Search app list
 func FindAllApp(where string, query ...interface{}) ([]interface{}, error) {
@@ -59,6 +61,21 @@ func FindAllApp(where string, query ...interface{}) ([]interface{}, error) {
 func UpdateApp(id int, name string) (int, error) {
 	Sql := `UPDATE portal_app SET name = ?, updated_at = ? WHERE id = ?`
 	_, err := ConnDB().Exec(Sql, name, time.Now().Format(util.TimeFormat), id)
+	if err != nil {
+		return 1, err
+	}
+	return 0, nil
+}
+// Find row by name
+func UniqueAppName(name string) (int, error) {
+	var app string
+	Sql := `SELECT app FROM portal_app WHERE app = ?`
+	err := ConnDB().QueryRow(Sql, name).Scan(&app)
+	// not found
+	if err == sql.ErrNoRows {
+		return -1, nil
+	}
+	// error
 	if err != nil {
 		return 1, err
 	}

@@ -22,12 +22,13 @@ func CreateApp(c *gin.Context) {
 		util.RespondBadRequest(c)
 		return
 	}
-	code, msg := service.CreateApp(jsonBody.Name)
+	code, msg, uuid := service.CreateApp(jsonBody.Name)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
 			"msg": msg,
 		},
+		"uuid": uuid,
 	})
 }
 // Get List

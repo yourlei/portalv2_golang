@@ -47,11 +47,11 @@ func Signin(email, passwd string) (int, interface{}) {
 	return 0, user
 }
 // claims
-type MyClaims struct {
-	UserId string `json:"userId,omitempty"`
-	RoleId string `json:"roleId,omitempty"`
-	jwt.StandardClaims
-}
+// type MyClaims struct {
+// 	UserId string `json:"userId,omitempty"`
+// 	RoleId string `json:"roleId,omitempty"`
+// 	jwt.StandardClaims
+// }
 // Generate Token
 func generateToken(userId, roleId string) (string, error) {
 	AppConf := config.AppConfig
@@ -62,10 +62,10 @@ func generateToken(userId, roleId string) (string, error) {
 	userId, _ = util.Encrypt([]byte(AppConf.AesKey), userId)
 	roleId, _ = util.Encrypt([]byte(AppConf.AesKey), roleId)
 	// Create the Claims
-	claims := MyClaims{
-		userId,
-		roleId,
-		jwt.StandardClaims {
+	claims := model.MyClaims{
+		UserId: userId,
+		RoleId: roleId,
+		StandardClaims: jwt.StandardClaims {
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "yourlin127@gmail.com",
 		},
@@ -123,7 +123,6 @@ func GetUserList(query model.UserQueryBody) ([]interface{}, error) {
 	}
 	// 邮箱
 	if query.Where.Email != "" {
-		// where += " AND `u`.`email` LIKE '%'||?||'%'"
 		where += " AND `u`.`email` LIKE ?"
 		values = append(values, query.Where.Email)
 	}

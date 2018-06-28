@@ -4,16 +4,15 @@ package openAuth
 
 import (
 	"time"
-	"fmt"
 	"net/http"
 	"encoding/json"
-	"portal/model"
+
 	"portal/util"
+	"portal/model"
+	"portal/service"
+
 	"github.com/gin-gonic/gin"
 )
-type Query struct {
-	TypeId int `json:"typeid" binding:"required,min:1"`
-}
 // header: token
 // params: url?query={typeid:1}
 // typeid 表示应用权限验证类型
@@ -21,7 +20,10 @@ type Query struct {
 // typeid = 2 token验证
 // typeid = 3 接口权限验证
 func Auth(c *gin.Context) {
-	var params Query
+	var (
+		params model.OpenAuth
+		status int  // response status code
+	)
 	if err := json.Unmarshal([]byte(c.Query("query")), &params); err != nil {
 		util.RespondBadRequest(c)
 		return
@@ -47,6 +49,7 @@ func Auth(c *gin.Context) {
 		})
 		return
 	}
+	params.Token = token
 	// 记录本次请求
   log := model.Log{
 		Url:    c.Request.URL.Path, 
@@ -56,8 +59,17 @@ func Auth(c *gin.Context) {
 		Host:   c.Request.Host,
 		CreateAt: time.Now().Format(util.TimeFormat),
 	}
-
-	fmt.Println(log)
-	// token := c.Request.Header.Get("token")
-  
+	// service
+	code, msg := service.Auth(params, log)
+	if code == 0 {
+		status = 200
+	} else {
+		status = 401
+	}
+	c.JSON(status, gin.H{
+		"code": code,
+		"error": gin.H{
+			"msg": msg,
+		},
+	})
 }
