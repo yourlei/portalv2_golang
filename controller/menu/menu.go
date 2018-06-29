@@ -1,7 +1,6 @@
 package menu
 // Menu router
 import (
-	"fmt"
 	"strconv"
 	"net/http"
 	"encoding/json"
@@ -18,7 +17,6 @@ func CreateRouter(c *gin.Context) {
 
 	err := c.BindJSON(&jsonBody)
 	if err != nil {
-		fmt.Println(err)
 		util.RespondBadRequest(c)
 		return
 	}
@@ -55,7 +53,7 @@ func GetRouterList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg,
+			"msg": msg.Error(),
 		},
 		"data": res,
 		"total": len(res),
@@ -65,7 +63,6 @@ func GetRouterList(c *gin.Context) {
 func UpdateRouter(c *gin.Context) {
 	var jsonBody model.RouteUpdate
 	if err := c.BindJSON(&jsonBody); err != nil {
-		fmt.Println(err)
 		util.RespondBadRequest(c)
 		return
 	}
@@ -107,7 +104,7 @@ func GetParentRouter(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg,
+			"msg": msg.Error(),
 		},
 		"data": data,
 	})

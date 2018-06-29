@@ -5,6 +5,7 @@
 package service
 
 import (
+	"fmt"
 	"portal/util"
 	"portal/model"
 	"portal/config"
@@ -13,7 +14,7 @@ import (
 )
 // Auth user permission and
 // request logging
-func Auth(req model.OpenAuth, log model.Log) (int, interface{}) {
+func Auth(req *model.OpenAuth, log model.Log) (int, interface{}) {
 	claims, err := middleware.ParseToken(req.Token)
 	if err != nil {
 		return 1, "无效的token"
@@ -26,10 +27,13 @@ func Auth(req model.OpenAuth, log model.Log) (int, interface{}) {
 	}
 	log.UserId = userId
 	// loggin
-	database.CreateLog(log)
+	if err := database.CreateLog(log); err != nil {
+		fmt.Println(err.Error())
+	}
 	// return if typeid = 2
-	if req.TypeId == 2 {
+	if req.Typeid == 2 {
 		return 0, nil
 	}
-	return database.CheckPermission(roleId, req.AppId)
+	code, err := database.CheckPermission(roleId, req.Appid)
+	return code, err.Error()
 }

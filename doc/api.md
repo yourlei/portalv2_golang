@@ -1269,6 +1269,44 @@ error: {
 }
 ```
 
+# 8 外部权限认证接口
 
+- url:    api/v1/openauth?query={body}
+- method: get
+- header: token(用户登录后portal返回的token)
+
+- body 参数
+
+``` json
+{
+  "typeid": 3,
+  "appid": "a8dd250c622357948b53b6797ed322a4"
+}
+```
+
+- 参数说明
+
+| 字段 | 类型 | 说明 |是否必填 |
+|:----:|:---:|:---:|:--- |
+| typeid | number |验证类型, 取值范围[1, 3](1: 无验证, 2: 基础token验证, 3: 接口权限验证)  | Y |
+| appid | string | 由portal分配给外部应用的uuid, 长度为32 | Y |
+
+**注: appid通过调用 ### 7.1 新增应用 接口生成**
+
+- 返回值
+
+``` json
+{
+    "code": 1,
+    "error": {
+        "msg": "没有访问权限"
+    }
+}
+```
+
+- 返回状态码:
+
+  - 400: 参数错误
+  - 401: 无效的token | 没有访问权限
 
 

@@ -21,15 +21,19 @@ import (
 // typeid = 3 接口权限验证
 func Auth(c *gin.Context) {
 	var (
-		params model.OpenAuth
+		params *model.OpenAuth
 		status int  // response status code
 	)
 	if err := json.Unmarshal([]byte(c.Query("query")), &params); err != nil {
 		util.RespondBadRequest(c)
 		return
 	}
+	if (params.Typeid < 1 || params.Typeid > 3) || len(params.Appid) != 32 {
+		util.RespondBadRequest(c)
+		return
+	}
 	// no auth
-	if params.TypeId == 1 {
+	if params.Typeid == 1 {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"error": gin.H{

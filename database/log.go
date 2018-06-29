@@ -5,7 +5,7 @@ import (
 )
 // create row
 func CreateLog(log model.Log) (error) {
-	Sql := "INSERT INTO portal_log(`user_id`, `url`, `method`, `host`, `proto`, `ua`, `create_at`) VALUES(?,?,?,?,?,?,?)"
+	Sql := "INSERT INTO portal_log(`user_id`, `url`, `method`, `host`, `proto`, `ua`, `created_at`) VALUES(?,?,?,?,?,?,?)"
 	tx, err := ConnDB().Begin()
 	if err != nil {
 		return err

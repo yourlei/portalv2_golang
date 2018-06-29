@@ -76,7 +76,7 @@ func QueryRoleList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg,
+			"msg": msg.Error(),
 		},
 		"data": res,
 		"total": len(res),
@@ -112,7 +112,7 @@ func GetUserByRole(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg,
+			"msg": msg.Error(),
 		},
 		"data": result, 
 	})
@@ -139,7 +139,7 @@ func MigrateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": err,
+			"msg": err.Error(),
 		},
 	})
 }
