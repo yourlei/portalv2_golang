@@ -3,11 +3,7 @@ package config
 import (
 	"os"
 	"fmt"
-	// "path/filepath"
-	// "regexp"
-	// "strings"
 	"io/ioutil"
-	// "unicode/utf8"
 	"encoding/json"
 	"portal/util"
 )
@@ -44,8 +40,6 @@ func initJSON() {
 	}
 
 	configStr := string(bytes[:])
-	// reg := regexp.MustCompile(`/\*.*\*/`)
-	// configStr = reg.ReplaceAllString(configStr, "")
 	bytes = []byte(configStr)
 
 	if err := json.Unmarshal(bytes, &jsonData); err != nil {

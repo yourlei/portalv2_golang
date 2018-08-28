@@ -38,16 +38,16 @@ func GenerateCaptcha() (string, string){
 	return idKeyC, base64stringC
 }
 
-/**
- * VerifyCaptcha
- * 检查输入的验证码是否正确
- * @params: 
- *   idKey: 验证码id
- *   verifyValue: 验证码字符
- * @return 
- *   int 错误码 
- *   string 错误信息
- */
+
+// VerifyCaptcha
+// 检查输入的验证码是否正确
+// @params: 
+//   idKey: 验证码id
+//   verifyValue: 验证码字符
+// @return 
+//   int 错误码 
+//   string 错误信息
+//
 func VerifyCaptcha(idkey, verifyValue string) (int, string) {
 	// 检查验证码是否失效
 	if captchaList[idkey] == "" {
@@ -59,15 +59,13 @@ func VerifyCaptcha(idkey, verifyValue string) (int, string) {
 		// succuss
 		return 0, "验证成功"
 	} else {
-		//fail
+		// fail
 		return 10007, "验证码输入不正确或已失效"
 	}
 }
-/**
- * StoreCaptcha
- * @params uuid: 生成的验证码id
- * 创建定时任务,60s后将该验证码从captchaList表移除
- */
+// StoreCaptcha
+// @params uuid: 生成的验证码id
+// 创建定时任务,60s后将该验证码从captchaList表移除
 func StoreCaptcha(uuid string) {
 	// 存储验证码id
 	captchaList[uuid] = "1"

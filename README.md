@@ -13,3 +13,10 @@ $ dep ensure
 ``` bash
 $ go run main.go
 ```
+
+监听3000端口, 测试服务启动成功:
+
+``` bash
+➜  ~ curl localhost:3000
+{"code":0,"msg":"service running"}
+```

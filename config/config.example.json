@@ -1,6 +1,14 @@
 {
-  "app": {
-    "TokenSecrect": "dcfcd07e645d245babe887e5e2daa016",
-    "TokenMaxAge": 3600
-  }
+    "app": {
+      "TokenSecrect": "token秘钥",
+      "TokenMaxAge": "token有效时间(ms)",
+      "AesKey": "aes加密算法使用的秘钥"
+    },
+    "mysql": {
+      "Username": "root",
+      "Password": "passwd",
+      "Host": "127.0.0.1",
+      "Port": 3306,
+      "Database": "db"
+    }
 }

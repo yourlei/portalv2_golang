@@ -37,7 +37,7 @@ func Signin(email, passwd string) (int, interface{}) {
 	}
 	// 比较密码
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(passwd)); err != nil {
-		return 10002, "密码不正确"
+		return 10002, "用户名或密码不正确"
 	}
 	// token
 	token, err := generateToken(strconv.Itoa(user.Id), strconv.Itoa(user.RoleId))
@@ -99,7 +99,7 @@ func Signup(User model.SignupForm) (int, interface{})  {
 	if (err != nil) {
 		return 1, err
 	}
-	return 0, nil
+	return 0, ""
 }
 // 查询用户列表
 // @params

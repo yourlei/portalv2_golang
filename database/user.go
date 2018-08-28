@@ -35,12 +35,12 @@ const selectUser = "SELECT"                 +
 // 用户登录
 func Signin(email string) (data model.TokenAndUser, err error) {
 	// 根据email查询用户
-	Sql := `SELECT id, name, password, mobile, status, check_status FROM portal_user WHERE email = ? AND status != 3`
+	Sql := `SELECT id, name, password, status, check_status FROM portal_user WHERE email = ? AND status != 3`
 	if err := ConnDB().QueryRow(Sql, email).Scan(
 		&data.Id, 
 		&data.Name,
 		&data.Password,
-		&data.Mobile,
+		// &data.Mobile,
 		&data.Status,
 		&data.CheckStatus,
 	); err != nil {

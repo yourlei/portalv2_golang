@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"strconv"
 	"net/http"
 	"encoding/json"
@@ -22,15 +23,15 @@ func Signin(c *gin.Context) {
     return
 	}
 	// 检查验证码
-	if errCode, errMsg := service.VerifyCaptcha(loginInfo.Uuid, loginInfo.Code); errCode != 0 {
-		c.JSON(http.StatusOK, gin.H{
-			"code": errCode, 
-			"error": gin.H{
-				"msg": errMsg,
-			},
-		})
-		return
-	}
+	// if errCode, errMsg := service.VerifyCaptcha(loginInfo.Uuid, loginInfo.Code); errCode != 0 {
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"code": errCode, 
+	// 		"error": gin.H{
+	// 			"msg": errMsg,
+	// 		},
+	// 	})
+	// 	return
+	// }
 	code, data := service.Signin(loginInfo.Email, loginInfo.Password)
 	msg, ok := data.(string)
 	if !ok {
@@ -68,6 +69,7 @@ func Signup(c *gin.Context) {
 		util.RespondBadRequest(c)
     return
 	}
+	fmt.Println("email: ", signupInfo.Email)
 	// code
 	code, msg := service.Signup(signupInfo)
 	r := &util.BaseResponse{
@@ -94,7 +96,7 @@ func QueryUserList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg.Error(),
+			"msg": msg,
 		},
 		"data": res,
 		"total": len(res),
