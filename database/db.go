@@ -1,33 +1,56 @@
 package database
 
 import (
-	"database/sql"
 	"log"
+	"time"
+	"database/sql"
+
+	"portal/config"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gomodule/redigo/redis"
 )
 // 定义数据库访问实例
 var db *sql.DB
-var err error
-// 访问mysql
+var RedisPool *redis.Pool
+// Connect mysql
 // dbConfig: "user:password@tcp(127.0.0.1:3306)/dbname"
-func OpenDB(dbConfig string) {
-	db, err = sql.Open("mysql", dbConfig)
+func initMysql() {
+	_db, err := sql.Open("mysql", config.MysqlConfig.URL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// defer db.Close()
+	db = _db
 }
-
-// 关闭数据库DB
+// Close mysql connect
 func CloseDB() {
 	err := db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 }
-
-// 获取数据库DB的连接
+// return conn object
 func ConnDB() *sql.DB {
 	return db
+}
+// Connect redis
+func initRedis() {
+	RedisPool = &redis.Pool{
+		MaxIdle:     config.RedisConfig.MaxIdle,
+		MaxActive:   config.RedisConfig.MaxActive,
+		IdleTimeout: 240 * time.Second,
+		Wait:        true,
+		Dial: func() (redis.Conn, error) {
+			c, err := redis.Dial("tcp", config.RedisConfig.URL, redis.DialPassword(config.RedisConfig.Password))
+			if err != nil {
+				return nil, err
+			}
+			return c, nil
+		},
+	}
+}
+// 初始化连接
+func init() {
+	initMysql()
+	initRedis()
 }

@@ -3,8 +3,9 @@
 // base64图片验证码
 package service
 import (
+	"fmt"
 	"time"
-
+	"portal/database"
 	"github.com/mojocn/base64Captcha"
 )
 
@@ -32,6 +33,16 @@ func GenerateCaptcha() (string, string){
 	idKeyC, capC := base64Captcha.GenerateCaptcha("", configC)
 	//以base64编码
 	base64stringC := base64Captcha.CaptchaWriteToBase64Encoding(capC)
+	// 验证码id缓存到redis
+	redisConn := database.RedisPool.Get()
+	defer redisConn.Close()
+	if _, err1 := redisConn.Do("PING"); err1 != nil {
+		fmt.Println("error: ", err1)
+	}
+ 
+	if _, err := redisConn.Do("SET", idKeyC, time.Now().Unix(), "EX", 60); err != nil {
+		fmt.Println("redis set failed:", err)
+	}
 	// 保存本次生成的验证码id
 	go StoreCaptcha(idKeyC)
 

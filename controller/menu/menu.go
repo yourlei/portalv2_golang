@@ -53,7 +53,7 @@ func GetRouterList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg.Error(),
+			"msg": msg,
 		},
 		"data": res,
 		"total": len(res),
@@ -104,7 +104,7 @@ func GetParentRouter(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"error": gin.H{
-			"msg": msg.Error(),
+			"msg": msg,
 		},
 		"data": data,
 	})

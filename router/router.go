@@ -87,7 +87,6 @@ func Run() {
 	// OpenAuth 外部验证模块
 	router.GET("/api/v1/openauth", openAuth.Auth)
 	// 查看角色组下权限(用户端)
-	// ...
 	// listent 3000
 	router.Run(":3000")
 }

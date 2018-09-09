@@ -10,5 +10,12 @@
       "Host": "127.0.0.1",
       "Port": 3306,
       "Database": "db"
+    },
+    "redis": {
+      "Host": "",
+      "Port": 6379,
+      "Password": "",
+      "MaxIdle": 3,
+      "MaxActive": 3
     }
 }

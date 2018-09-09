@@ -209,7 +209,7 @@ func UpdateRouter(id int, r model.RouteUpdate) (int, interface{}) {
 	// Have update field
 	if len(where) > 0 {
 		updateSql := "UPDATE portal_router SET " + strings.Join(where, ",")
-		_, err = ConnDB().Exec(updateSql + " WHERE id = ?", strconv.Itoa(id))
+		_, err := ConnDB().Exec(updateSql + " WHERE id = ?", strconv.Itoa(id))
 		if err != nil {
 			return 1, err
 		}

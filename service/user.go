@@ -2,7 +2,7 @@
 package service
 
 import (
-	"fmt"
+	// "fmt"
 	"strconv"
 	"time"
 
@@ -145,7 +145,6 @@ func GetUserList(query model.UserQueryBody) ([]interface{}, error) {
 	// 加入分页
 	params[len(values)] = query.Offset
 	params[len(values) + 1] = query.Limit
-	fmt.Println(where, params)
 	// Select user table
 	res, err := database.FindAllUser(where, params...)
 	if err != nil {

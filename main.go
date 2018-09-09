@@ -5,8 +5,8 @@ import (
 	"os"
 	"log"
 
-	"portal/config"
-	"portal/database"
+	// "portal/config"
+	_ "portal/database"
 	"portal/router"
 )
 // Define init work
@@ -23,6 +23,6 @@ func init() {
 	logger.Println("hello")
 }
 func main()  {
-	database.OpenDB(config.MysqlConfig.URL)
+	// database.OpenDB(config.MysqlConfig.URL)
 	router.Run()
 }
